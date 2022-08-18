@@ -15,7 +15,8 @@ import Home from './windows/Home/Home';
 import MinionsList from './windows/Dashboard/MinionsList/MinionsList';
 import Minion from './windows/Dashboard/Minion/Minion';
 import Dashboardlayout from './windows/Dashboard/layout/Dashboardlayout';
-import MinionApplicationList from './windows/Dashboard/Minion/ApplicationList';
+import MinionView from './windows/Dashboard/Minion/MinionView';
+import CmdView from './windows/Dashboard/CmdView';
 
 export default function App() {
   return (
@@ -24,9 +25,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboardlayout />}>
           <Route index element={<MinionsList />} />
+          <Route path="cmd" element={<CmdView />} />
           <Route path="minion">
             <Route index element={<Minion />} />
-            <Route path=":minionId" element={<MinionApplicationList />} />
+            <Route path=":minionId" element={<MinionView />} />
           </Route>
         </Route>
       </Routes>

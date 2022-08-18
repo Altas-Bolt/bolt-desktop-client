@@ -14,11 +14,6 @@ const { Header, Content, Sider } = Layout;
 // Import Styles
 import { DashboardlayoutWrapper } from './Dashboardlayout.styles';
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));
-
 const items2: MenuProps['items'] = [
   UserOutlined,
   LaptopOutlined,

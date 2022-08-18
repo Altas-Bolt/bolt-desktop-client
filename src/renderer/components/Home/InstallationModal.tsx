@@ -1,6 +1,9 @@
 // Import Modules
-import { message, Modal } from 'antd';
+import { Input, message, Modal } from 'antd';
 import { useState } from 'react';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+
+// Import Utils
 import { installSaltMaster } from 'utils/helperFunctions';
 
 interface IProps {
@@ -12,10 +15,12 @@ interface IProps {
 
 const InstallationModal: React.FC<IProps> = ({ status, setStatus }) => {
   const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
 
   const handleOk = async () => {
     try {
       setLoading(true);
+      localStorage.setItem('pwd', password);
       await installSaltMaster();
     } catch (error: any) {
       message.error('Failed to Install');
@@ -30,12 +35,21 @@ const InstallationModal: React.FC<IProps> = ({ status, setStatus }) => {
       visible={status === 'error'}
       onOk={handleOk}
       okText={loading ? 'Installing' : 'Install'}
+      okButtonProps={{ disabled: !password }}
       onCancel={() => setStatus('idle')}
     >
       <p>
         We could not find the installation for Bolt. Please install in order to
         proceed.
       </p>
+      <Input.Password
+        placeholder="Enter your sudo password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        iconRender={(visible) =>
+          visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+        }
+      />
     </Modal>
   );
 };

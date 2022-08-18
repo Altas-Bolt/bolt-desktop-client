@@ -200,7 +200,7 @@
       "dist",
       "node_modules",
       "package.json",
-      "scripts/"
+      "../../assets/"
     ],
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {

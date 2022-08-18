@@ -1,5 +1,6 @@
+/* eslint-disable no-restricted-syntax */
 // Import Modules
-import { exec, spawn } from 'child_process';
+import { exec } from 'child_process';
 import { readFile } from 'fs/promises';
 import os from 'os';
 
@@ -63,39 +64,43 @@ export const isSaltMasterInstalled = async () => {
 };
 
 export const getSaltKeys = async () => {
-  const pwd = localStorage.getItem('pwd');
-  if(!pwd) return;
-  try{
-    const res: any = await executeSudoCMDAsync(`sudo -S salt-key`, pwd).catch(err => {
-      throw err;
-    })
+  try {
+    const pwd = localStorage.getItem('pwd');
+    if (!pwd) throw new Error('Password not found');
+
+    const res = (await executeSudoCMDAsync(`sudo -S salt-key`, pwd)) as string;
+
     // get all the lines in the output
     const lines = res.split('\n');
-    const acceptedKeys = [];
-    const unacceptedKeys = [];
-    const rejectedKeys = [];
-    let flag = "";
-    for(const line of lines){
+
+    const keys: Record<string, string[]> = {
+      acceptedKeys: [],
+      unacceptedKeys: [],
+      rejectedKeys: [],
+    };
+
+    let flag = '';
+
+    for (const line of lines) {
       // if the line is a key, return the key
-      if(line == 'Accepted Keys:' || line == 'Rejected Keys:' || line == 'Unaccepted Keys:'){
+      if (
+        line === 'Accepted Keys:' ||
+        line === 'Rejected Keys:' ||
+        line === 'Unaccepted Keys:'
+      ) {
         flag = line;
-        continue;
-      }else{
-        if(flag == 'Accepted Keys:'){
-          acceptedKeys.push(line);
-        }else if(flag == 'Rejected Keys:'){
-          rejectedKeys.push(line);
-        }else if(flag == 'Unaccepted Keys:'){
-          unacceptedKeys.push(line);
-        }
+      } else if (flag === 'Accepted Keys:') {
+        keys.acceptedKeys.push(line);
+      } else if (flag === 'Rejected Keys:') {
+        keys.rejectedKeys.push(line);
+      } else if (flag === 'Unaccepted Keys:') {
+        keys.unacceptedKeys.push(line);
       }
     }
-    return {
-      "accepted_keys": acceptedKeys,
-      "unnaccepted_keys": unacceptedKeys,
-      "rejected_keys": rejectedKeys
-    }
-  }catch(e){
+
+    return keys;
+  } catch (e: any) {
+    console.log(e.message);
     throw e;
   }
 };

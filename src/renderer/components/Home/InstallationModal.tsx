@@ -1,6 +1,7 @@
 // Import Modules
 import { Input, message, Modal } from 'antd';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 // Import Utils
@@ -15,13 +16,16 @@ interface IProps {
 
 const InstallationModal: React.FC<IProps> = ({ status, setStatus }) => {
   const [loading, setLoading] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(localStorage.getItem('pwd') || '');
+  const navigate = useNavigate();
 
   const handleOk = async () => {
     try {
       setLoading(true);
       localStorage.setItem('pwd', password);
       await installSaltMaster();
+      message.success('Installed successfully');
+      navigate('/dashboard');
     } catch (error: any) {
       message.error('Failed to Install');
     } finally {

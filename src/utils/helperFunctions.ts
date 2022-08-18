@@ -40,8 +40,7 @@ const executeCMDAsync = (cmd: string) => {
 
 const executeSudoCMDAsync = (cmd: string, pwd: string) => {
   return new Promise((resolve, reject) => {
-    const str = `${cmd.slice(0, 4)} -S ${cmd.slice(5)}}`;
-    exec(`echo ${pwd} | ${str}`, (error, stdout, stderr) => {
+    exec(`echo ${pwd} | ${cmd}`, (error, stdout, stderr) => {
       if (error) reject(error);
 
       if (stderr) reject(stderr);
@@ -70,20 +69,26 @@ export const installSaltMaster = async () => {
 
     if (isMac()) {
       await executeCMDAsync('brew install saltstack');
-      await executeSudoCMDAsync('sudo mkdir /etc/salt', pwd).catch((err) =>
+      await executeSudoCMDAsync('sudo -S mkdir /etc/salt', pwd).catch((err) =>
         console.error(err)
       );
 
-      await executeSudoCMDAsync('sudo touch /etc/salt/master', pwd).catch(
+      await executeSudoCMDAsync('sudo -S touch /etc/salt/master', pwd).catch(
         (err) => console.error(err)
       );
     } else if (isLinux()) {
       const releaseDetails = await getLinuxReleaseDetails();
 
       if (releaseDetails.id_like === 'debian') {
-        // TODO: ADD DEBIAN SCRIPT
+        await executeSudoCMDAsync(
+          'sudo -S apt-get install salt-api salt-cloud salt-master salt-minion salt-ssh salt-syndic',
+          pwd
+        );
       } else if (releaseDetails.id_like === 'fedora') {
-        // TODO: ADD FEDORA SCRIPT
+        await executeSudoCMDAsync(
+          'sudo -S yum install salt-master salt-minion',
+          pwd
+        );
       } else {
         throw new Error('Unsupported Platform');
       }

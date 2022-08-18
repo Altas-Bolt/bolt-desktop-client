@@ -104,3 +104,19 @@ export const installSaltMaster = async () => {
     return false;
   }
 };
+
+export const acceptMinionKey = async (minionId: string, pwd: string) => {
+  await executeSudoCMDAsync(`sudo -S salt-key -a ${minionId}`, pwd);
+};
+
+export const acceptAllMinionKeys = async (pwd: string) => {
+  await executeSudoCMDAsync(`sudo -S salt-key -A`, pwd);
+};
+
+export const rejectMinionKey = async (minionId: string, pwd: string) => {
+  await executeSudoCMDAsync(`sudo -S salt-key -r ${minionId}`, pwd);
+};
+
+export const rejectAllMinionKeys = async (pwd: string) => {
+  await executeSudoCMDAsync(`sudo -S salt-key -R`, pwd);
+};

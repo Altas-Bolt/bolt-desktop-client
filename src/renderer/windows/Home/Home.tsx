@@ -1,6 +1,6 @@
 // Import Modules
-import { useState } from 'react';
-import { Button, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, message, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 // Import Utils
@@ -16,9 +16,23 @@ const Home = () => {
   const [status, setStatus] = useState<
     'loading' | 'error' | 'success' | 'idle'
   >('idle');
+  const [checkCompleted, setCheckCompleted] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const checkInstallation = async () => {
+    const isInstalled = await isSaltMasterInstalled();
+
+    if (isInstalled) navigate('/dashboard');
+
+    setCheckCompleted(true);
+  };
+
+  useEffect(() => {
+    checkInstallation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleGetStarted = async () => {
     setStatus('loading');
     const isInstalled = await isSaltMasterInstalled();
 
@@ -31,6 +45,13 @@ const Home = () => {
     }
   };
 
+  if (!checkCompleted)
+    return (
+      <HomeWrapper>
+        <Spin size="large" />
+      </HomeWrapper>
+    );
+
   return (
     <HomeWrapper>
       <div className="header">
@@ -41,7 +62,7 @@ const Home = () => {
           type="primary"
           size="large"
           loading={status === 'loading'}
-          onClick={checkInstallation}
+          onClick={handleGetStarted}
         >
           Get Started
         </Button>

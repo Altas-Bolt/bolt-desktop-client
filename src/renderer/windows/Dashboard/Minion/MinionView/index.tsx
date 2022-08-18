@@ -1,6 +1,7 @@
 import { List } from 'antd';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { MinionProfile } from 'renderer/components/MinionProfile';
 
 const fake = [{ key: 'abc' }, { key: 'def' }, { key: 'ghi' }].map(
   ({ key }) => ({
@@ -14,6 +15,7 @@ const MinionView: React.FC = () => {
 
   return (
     <div>
+      <MinionProfile />
       <List
         className="demo-loadmore-list"
         // loading={initLoading}

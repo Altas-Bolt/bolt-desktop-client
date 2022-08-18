@@ -1,4 +1,4 @@
-import { Input, Select, Space } from 'antd';
+import { Button, Input, message, Select, Space } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import { CmdViewLayout } from './CmdView.styles';
@@ -17,13 +17,12 @@ const CmdView: React.FC = ({}) => {
     SelectedMinionGroups[]
   >([]);
   const [selectMinionGroupError, setSelectMinionGroupError] = useState(false);
-
+  const [customRegex, setCustomRegex] = useState('');
+  const [cmd, setCmd] = useState('');
   const [showCustom, setShowCustom] = useState(false);
 
   const handleSelect = (key: SelectedMinionGroups) => {
     if (showCustom) return;
-    // console.log(selected, selected.includes(SelectedMinionGroupsEnum.Custom));
-    // if (selected.includes(SelectedMinionGroupsEnum.Custom)) {
     if (key === SelectedMinionGroupsEnum.Custom) {
       setShowCustom(true);
       setSelectedMinionGroups(['Custom']);
@@ -32,10 +31,19 @@ const CmdView: React.FC = ({}) => {
       setSelectedMinionGroups([...selectedMinionGroups, key]);
     }
   };
+  const handleClick = () => {
+    if (selectedMinionGroups.length === 0) {
+      setSelectMinionGroupError(true);
+      message.error('Please select a group');
+      return;
+    }
+    if (!cmd) message.error('Please enter a cmd');
 
+    console.log('CMD RUN ', cmd);
+  };
   return (
-    <CmdViewLayout className="upper">
-      <Input.Group>
+    <CmdViewLayout>
+      <Space direction="vertical" style={{ width: '100%' }}>
         <Select
           status={selectMinionGroupError ? 'error' : ''}
           mode="multiple"
@@ -58,11 +66,26 @@ const CmdView: React.FC = ({}) => {
             <Select.Option key={opt}>{opt}</Select.Option>
           ))}
         </Select>
-        {showCustom ? <Input placeholder="enter cutom regex" /> : null}
-      </Input.Group>
-      <Input placeholder="Enter Command" />
+        {showCustom ? (
+          <Input
+            value={customRegex}
+            onChange={(e) => {
+              setCustomRegex(e.target.value);
+            }}
+            placeholder="enter cutom regex"
+          />
+        ) : null}
+        <div style={{ display: 'flex' }}>
+          <Input
+            onChange={(e) => setCmd(e.target.value)}
+            value={cmd}
+            placeholder="Enter Command"
+          />
+          <Button onClick={handleClick}>Run </Button>
+        </div>
 
-      <TextArea rows={4} placeholder="maxLength is 6" maxLength={6} />
+        <TextArea rows={4} placeholder="maxLength is 6" maxLength={6} />
+      </Space>
     </CmdViewLayout>
   );
 };

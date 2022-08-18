@@ -62,6 +62,44 @@ export const isSaltMasterInstalled = async () => {
   }
 };
 
+export const getSaltKeys = async () => {
+  const pwd = localStorage.getItem('pwd');
+  if(!pwd) return;
+  try{
+    const res: any = await executeSudoCMDAsync(`sudo -S salt-key`, pwd).catch(err => {
+      throw err;
+    })
+    // get all the lines in the output
+    const lines = res.split('\n');
+    const acceptedKeys = [];
+    const unacceptedKeys = [];
+    const rejectedKeys = [];
+    let flag = "";
+    for(const line of lines){
+      // if the line is a key, return the key
+      if(line == 'Accepted Keys:' || line == 'Rejected Keys:' || line == 'Unaccepted Keys:'){
+        flag = line;
+        continue;
+      }else{
+        if(flag == 'Accepted Keys:'){
+          acceptedKeys.push(line);
+        }else if(flag == 'Rejected Keys:'){
+          rejectedKeys.push(line);
+        }else if(flag == 'Unaccepted Keys:'){
+          unacceptedKeys.push(line);
+        }
+      }
+    }
+    return {
+      "accepted_keys": acceptedKeys,
+      "unnaccepted_keys": unacceptedKeys,
+      "rejected_keys": rejectedKeys
+    }
+  }catch(e){
+    throw e;
+  }
+};
+
 export const installSaltMaster = async () => {
   try {
     const pwd = localStorage.getItem('pwd');

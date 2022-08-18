@@ -1,6 +1,7 @@
 // Import Modules
 import { useState } from 'react';
 import { Button, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 // Import Utils
 import { isSaltMasterInstalled } from 'utils/helperFunctions';
@@ -10,13 +11,13 @@ import InstallationModal from 'renderer/components/Home/InstallationModal';
 
 // Import Styles
 import { HomeWrapper } from './Home.styles';
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [status, setStatus] = useState<
     'loading' | 'error' | 'success' | 'idle'
   >('idle');
   const navigate = useNavigate();
+
   const checkInstallation = async () => {
     setStatus('loading');
     const isInstalled = await isSaltMasterInstalled();

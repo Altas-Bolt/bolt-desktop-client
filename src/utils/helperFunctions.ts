@@ -1,5 +1,5 @@
 // Import Modules
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { readFile } from 'fs/promises';
 import os from 'os';
 
@@ -13,6 +13,9 @@ export const getLinuxReleaseDetails = async () => {
   const releaseDetails: Record<string, string> = {};
 
   res.split('\n').forEach((line) => {
+    if (!line) return;
+    console.log(line);
+
     const words = line.split('=');
     releaseDetails[words[0].trim().toLowerCase()] = words[1].trim();
   });
@@ -79,14 +82,14 @@ export const installSaltMaster = async () => {
     } else if (isLinux()) {
       const releaseDetails = await getLinuxReleaseDetails();
 
-      if (releaseDetails.id_like === 'debian') {
+      if (releaseDetails.id_like.includes('debian')) {
         await executeSudoCMDAsync(
-          'sudo -S apt-get install salt-api salt-cloud salt-master salt-minion salt-ssh salt-syndic',
+          'sudo -S apt-get install -y salt-api salt-cloud salt-master salt-minion salt-ssh salt-syndic',
           pwd
         );
-      } else if (releaseDetails.id_like === 'fedora') {
+      } else if (releaseDetails.id_like.includes('fedora')) {
         await executeSudoCMDAsync(
-          'sudo -S yum install salt-master salt-minion',
+          'sudo -S yum install -y salt-master salt-minion',
           pwd
         );
       } else {

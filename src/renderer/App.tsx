@@ -1,10 +1,5 @@
 // Import Modules
-import {
-  MemoryRouter as Router,
-  Route,
-  Routes,
-  useParams,
-} from 'react-router-dom';
+import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Import Styles
 import 'antd/dist/antd.css';

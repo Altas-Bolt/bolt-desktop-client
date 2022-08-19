@@ -1,20 +1,22 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // Import Modules
-import { blue, grey } from '@ant-design/colors';
+import { blue } from '@ant-design/colors';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   DownOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons';
-import { Dropdown, List, Menu, Space, Tag } from 'antd';
+import { Dropdown, List, Menu, Space, Spin, Tag } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useMinionListHelper from 'renderer/hooks/useMinionListHelper';
 
 // Import Styles
 import { FilterText, getOptionColor } from './MinionsList.styles';
 
-const fake = [
+export const fake = [
   { key: 'abc', status: 'Accepted' },
   { key: 'def', status: 'Rejected' },
   { key: 'ghi', status: 'Requested' },
@@ -33,33 +35,45 @@ export enum SelectedMinionListEnum {
 }
 export type SelectedMinionListType = keyof typeof SelectedMinionListEnum;
 
-const dropdownOptions = [
-  {
-    key: '1',
-    label: <div>Accept</div>,
-    icon: <CheckCircleOutlined />,
-  },
-  {
-    key: '2',
-    label: <div>Reject</div>,
-    icon: <CloseCircleOutlined />,
-  },
-];
-
-const MinionsList: React.FC = ({}) => {
+const DropdownMenu: React.FC<{
+  onClickViewProfile: () => void;
+  status: SelectedMinionListType;
+}> = ({ onClickViewProfile, status }) => {
+  return (
+    <Menu style={{ width: 150 }}>
+      <Menu.Item
+        icon={<CheckCircleOutlined />}
+        disabled={status !== 'Requested'}
+      >
+        Accept
+      </Menu.Item>
+      <Menu.Item
+        icon={<CloseCircleOutlined />}
+        disabled={status !== 'Requested'}
+      >
+        Reject
+      </Menu.Item>
+      <Menu.Item icon={<ProfileOutlined />} onClick={onClickViewProfile}>
+        View Profile
+      </Menu.Item>
+    </Menu>
+  );
+};
+const MinionsList: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<SelectedMinionListType>(
     SelectedMinionListEnum.All
   );
   const navigate = useNavigate();
 
-  const filterData = (
-    data: typeof fake,
-    status: SelectedMinionListType = 'All'
-  ) => {
-    if (status === 'All') return data;
+  const { filterData, saltKeys, status } = useMinionListHelper();
 
-    return data.filter((item) => item.status === status);
-  };
+  if (status === 'loading') {
+    return <Spin size="large" />;
+  }
+
+  if (status === 'error') {
+    return <div>Error</div>;
+  }
 
   return (
     <div>
@@ -106,37 +120,28 @@ const MinionsList: React.FC = ({}) => {
           dataSource={filterData(fake, selectedFilter)}
           renderItem={(item) => (
             <List.Item
-              onClick={() => {
-                navigate(`minion/${item.email}`);
-              }}
+              onClick={() => {}}
               actions={[
-                // <a key="list-loadmore-edit">edit</a>,
                 <Tag
                   color={getOptionColor(item.status as SelectedMinionListType)}
                 >
                   {item.status}
                 </Tag>,
                 <Dropdown
-                  overlay={<Menu items={dropdownOptions} />}
-                  disabled={item.status !== 'Requested'}
+                  overlay={
+                    <DropdownMenu
+                      status={item.status as SelectedMinionListType}
+                      onClickViewProfile={() =>
+                        navigate(`minion/${item.email}`)
+                      }
+                    />
+                  }
                 >
                   <Space>
-                    <p
-                      style={{
-                        color:
-                          item.status === 'Requested'
-                            ? blue.primary
-                            : grey.primary,
-                        margin: 0,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Action
-                    </p>
+                    <p style={{ margin: 0, color: blue.primary }}>Action</p>
                     <DownOutlined />
                   </Space>
                 </Dropdown>,
-                // <a key="list-loadmore-more">more</a>,
               ]}
             >
               {/* <Skeleton avatar title={false} loading={item.loading} active> */}

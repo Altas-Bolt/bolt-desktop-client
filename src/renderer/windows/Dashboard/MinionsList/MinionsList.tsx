@@ -1,20 +1,23 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // Import Modules
+
 import { green, red } from '@ant-design/colors';
+
 import {
   CheckCircleFilled,
   CloseCircleFilled,
   DownOutlined,
 } from '@ant-design/icons';
-import { Dropdown, List, Menu, Space, Tag } from 'antd';
+import { Dropdown, List, Menu, Space, Spin, Tag } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useMinionListHelper from 'renderer/hooks/useMinionListHelper';
 
 // Import Styles
 import { FilterText, getOptionColor } from './MinionsList.styles';
 
-const fake = [
+export const fake = [
   { key: 'abc', status: 'Accepted' },
   { key: 'def', status: 'Rejected' },
   { key: 'ghi', status: 'Requested' },
@@ -54,14 +57,15 @@ const MinionsList: React.FC = ({}) => {
   );
   const navigate = useNavigate();
 
-  const filterData = (
-    data: typeof fake,
-    status: SelectedMinionListType = 'All'
-  ) => {
-    if (status === 'All') return data;
+  const { filterData, saltKeys, status } = useMinionListHelper();
 
-    return data.filter((item) => item.status === status);
-  };
+  if (status === 'loading') {
+    return <Spin size="large" />;
+  }
+
+  if (status === 'error') {
+    return <div>Error</div>;
+  }
 
   return (
     <div>

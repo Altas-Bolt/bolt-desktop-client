@@ -6,17 +6,20 @@ import { SelectedMinionListType } from './MinionsList';
 
 export const MinionsListWrapperDiv = styled.div``;
 
-export const getOptionColor = (status: SelectedMinionListType) => {
+export const getOptionColor = (
+  status: SelectedMinionListType,
+  { index }: { index: 'primary' | number } = { index: 'primary' }
+) => {
   switch (status.toLowerCase()) {
     case 'accepted':
-      return green.primary;
+      return green[index];
     case 'rejected':
-      return red.primary;
+      return red[index];
     case 'requested':
-      return grey.primary;
+      return grey[index];
     case 'all':
     default:
-      return blue.primary;
+      return blue[index];
   }
 };
 

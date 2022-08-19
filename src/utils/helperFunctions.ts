@@ -107,7 +107,7 @@ export const getSaltKeys = async () => {
 
 export const installSaltMaster = async () => {
   try {
-    const pwd = localStorage.getItem('pwd');
+    const pwd = localStorage.getItem('LOCAL_STORAGE_PASSWORD_KEY');
 
     if (!pwd) {
       throw new Error('Password not found');

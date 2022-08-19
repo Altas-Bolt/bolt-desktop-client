@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const MinionProfileWrapper = styled.div`
+export const AdminProfileWrapper = styled.div`
   margin: 20px;
 
   .container {
@@ -8,16 +8,18 @@ export const MinionProfileWrapper = styled.div`
     margin: 20px;
   }
   .info_container {
-    
-     
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: #f5f5f5;
-    margin: 10px 20px;
-    padding: 10px 40px;
+
     border-radius: 30px;
+    padding: 10px 40px;
   }
+  .section {
+    margin: 10px 20px;
+  }
+
   h1.name {
     font-size: 25px;
     margin: 0px 10px;
@@ -38,5 +40,9 @@ export const MinionProfileWrapper = styled.div`
     h1.ip {
       font-style: italic;
     }
+  }
+
+  .logoutBtn {
+    margin: 10px 40px;
   }
 `;

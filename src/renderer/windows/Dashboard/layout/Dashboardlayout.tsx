@@ -9,6 +9,7 @@ import { Breadcrumb, Layout, Menu } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from 'renderer/components/Navbar/navbar';
+import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
 const { Header, Content, Sider } = Layout;
 
 // Import Styles
@@ -41,71 +42,73 @@ const Dashboardlayout = () => {
   const navigate = useNavigate();
 
   return (
-    <DashboardlayoutWrapper>
-      <Layout style={{ height: '100vh' }}>
-        <Header className="header">
-          <div className="logo" />
-          <Navbar />
-        </Header>
-        <Layout>
-          <Sider width={200} className="site-layout-background">
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
-              style={{ height: '100%', borderRight: 0 }}
-              items={items2}
-            />
-          </Sider>
-          <Layout style={{ padding: '0 24px 24px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              {location.pathname
-                .split('/')
-                .splice(1)
-                .reduce<
-                  {
-                    pathname: string;
-                    label: string;
-                  }[]
-                >((prev, curr) => {
-                  const n = [...prev];
-                  n.push({
-                    pathname:
-                      prev.length > 0
-                        ? prev[prev.length - 1].pathname + `/${curr}`
-                        : `/${curr}`,
-                    label: curr,
-                  });
-                  return n;
-                }, [])
-                .map(({ pathname, label }) => (
-                  <Breadcrumb.Item key={label}>
-                    <a
-                      href={pathname}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(pathname);
-                      }}
-                    >
-                      {label}
-                    </a>
-                  </Breadcrumb.Item>
-                ))}
-            </Breadcrumb>
-            <Content
-              className="site-layout-background"
-              style={{
-                padding: 24,
-                margin: 0,
-                minHeight: 280,
-              }}
-            >
-              <Outlet />
-            </Content>
+    <ProtectedRoute>
+      <DashboardlayoutWrapper>
+        <Layout style={{ height: '100vh' }}>
+          <Header className="header">
+            <div className="logo" />
+            <Navbar />
+          </Header>
+          <Layout>
+            <Sider width={200} className="site-layout-background">
+              <Menu
+                mode="inline"
+                defaultSelectedKeys={['1']}
+                defaultOpenKeys={['sub1']}
+                style={{ height: '100%', borderRight: 0 }}
+                items={items2}
+              />
+            </Sider>
+            <Layout style={{ padding: '0 24px 24px' }}>
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                {location.pathname
+                  .split('/')
+                  .splice(1)
+                  .reduce<
+                    {
+                      pathname: string;
+                      label: string;
+                    }[]
+                  >((prev, curr) => {
+                    const n = [...prev];
+                    n.push({
+                      pathname:
+                        prev.length > 0
+                          ? prev[prev.length - 1].pathname + `/${curr}`
+                          : `/${curr}`,
+                      label: curr,
+                    });
+                    return n;
+                  }, [])
+                  .map(({ pathname, label }) => (
+                    <Breadcrumb.Item key={label}>
+                      <a
+                        href={pathname}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate(pathname);
+                        }}
+                      >
+                        {label}
+                      </a>
+                    </Breadcrumb.Item>
+                  ))}
+              </Breadcrumb>
+              <Content
+                className="site-layout-background"
+                style={{
+                  padding: 24,
+                  margin: 0,
+                  minHeight: 280,
+                }}
+              >
+                <Outlet />
+              </Content>
+            </Layout>
           </Layout>
         </Layout>
-      </Layout>
-    </DashboardlayoutWrapper>
+      </DashboardlayoutWrapper>
+    </ProtectedRoute>
   );
 };
 

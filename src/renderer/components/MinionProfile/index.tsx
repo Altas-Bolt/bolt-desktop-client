@@ -6,7 +6,11 @@ export const MinionProfile: React.FC = () => {
   return (
     <MinionProfileWrapper>
       <div className="container">
-        <Avatar size={128} src={'https://picsum.photos/500/500'} />
+        <Avatar
+          style={{ minWidth: '128px' }}
+          size={128}
+          src={'https://picsum.photos/500/500'}
+        />
         <div className="info_container">
           <div>
             <h1 className="name">Rishabh Jain</h1>

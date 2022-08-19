@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // Import Modules
-import { blue, grey } from '@ant-design/colors';
+import { green, red } from '@ant-design/colors';
 import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
+  CheckCircleFilled,
+  CloseCircleFilled,
   DownOutlined,
 } from '@ant-design/icons';
 import { Dropdown, List, Menu, Space, Tag } from 'antd';
@@ -17,6 +17,8 @@ import { FilterText, getOptionColor } from './MinionsList.styles';
 const fake = [
   { key: 'abc', status: 'Accepted' },
   { key: 'def', status: 'Rejected' },
+  { key: 'ghi', status: 'Requested' },
+  { key: 'ghi', status: 'Requested' },
   { key: 'ghi', status: 'Requested' },
 ].map(({ key, status }) => ({
   name: `name_${key}`,
@@ -33,18 +35,18 @@ export enum SelectedMinionListEnum {
 }
 export type SelectedMinionListType = keyof typeof SelectedMinionListEnum;
 
-const dropdownOptions = [
-  {
-    key: '1',
-    label: <div>Accept</div>,
-    icon: <CheckCircleOutlined />,
-  },
-  {
-    key: '2',
-    label: <div>Reject</div>,
-    icon: <CloseCircleOutlined />,
-  },
-];
+// const dropdownOptions = [
+//   {
+//     key: '1',
+//     label: <div>Accept</div>,
+//     icon: <CheckCircleOutlined />,
+//   },
+//   {
+//     key: '2',
+//     label: <div>Reject</div>,
+//     icon: <CloseCircleOutlined />,
+//   },
+// ];
 
 const MinionsList: React.FC = ({}) => {
   const [selectedFilter, setSelectedFilter] = useState<SelectedMinionListType>(
@@ -106,38 +108,77 @@ const MinionsList: React.FC = ({}) => {
           dataSource={filterData(fake, selectedFilter)}
           renderItem={(item) => (
             <List.Item
+              style={{
+                padding: '20px',
+                margin: '10px',
+                // borderRadius: '10px',
+                // backgroundColor:
+                //   item.status.toLowerCase() === 'requested'
+                //     ? 'white'
+                //     : getOptionColor(item.status as SelectedMinionListType, {
+                //         index: 3,
+                //       }),
+              }}
               onClick={() => {
                 navigate(`minion/${item.email}`);
               }}
-              actions={[
-                // <a key="list-loadmore-edit">edit</a>,
-                <Tag
-                  color={getOptionColor(item.status as SelectedMinionListType)}
-                >
-                  {item.status}
-                </Tag>,
-                <Dropdown
-                  overlay={<Menu items={dropdownOptions} />}
-                  disabled={item.status !== 'Requested'}
-                >
-                  <Space>
-                    <p
-                      style={{
-                        color:
-                          item.status === 'Requested'
-                            ? blue.primary
-                            : grey.primary,
-                        margin: 0,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Action
-                    </p>
-                    <DownOutlined />
-                  </Space>
-                </Dropdown>,
-                // <a key="list-loadmore-more">more</a>,
-              ]}
+              actions={
+                item.status.toLowerCase() !== 'requested'
+                  ? [
+                      <Tag
+                        color={getOptionColor(
+                          item.status as SelectedMinionListType
+                        )}
+                        style={{
+                          borderRadius: '30px',
+                        }}
+                      >
+                        {item.status}
+                      </Tag>,
+                    ]
+                  : [
+                      <div
+                        style={{
+                          fontSize: '30px',
+                          display: 'flex',
+                          justifyContent: 'space-evenly',
+                          width: '100px',
+                        }}
+                      >
+                        <CheckCircleFilled
+                          style={{
+                            color: green.primary,
+                          }}
+                        />
+
+                        <CloseCircleFilled
+                          style={{
+                            color: red.primary,
+                          }}
+                        />
+                      </div>,
+                      // <Dropdown
+                      //   overlay={<Menu items={dropdownOptions} />}
+                      //   disabled={item.status !== 'Requested'}
+                      // >
+                      //   <Space>
+                      //     <p
+                      //       style={{
+                      //         color:
+                      //           item.status === 'Requested'
+                      //             ? blue.primary
+                      //             : grey.primary,
+                      //         margin: 0,
+                      //       }}
+                      //       onClick={(e) => e.stopPropagation()}
+                      //     >
+                      //       Action
+                      //     </p>
+                      //     <DownOutlined />
+                      //   </Space>
+                      // </Dropdown>,
+                    ]
+              }
             >
               {/* <Skeleton avatar title={false} loading={item.loading} active> */}
               <List.Item.Meta

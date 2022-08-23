@@ -1,34 +1,19 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 // Import Modules
 
 import { green, red } from '@ant-design/colors';
-
 import {
   CheckCircleFilled,
   CloseCircleFilled,
   DownOutlined,
 } from '@ant-design/icons';
-import { Dropdown, List, Menu, Space, Spin, Tag } from 'antd';
-import React, { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Dropdown, List, Menu, message, Space, Spin, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useMinionListHelper from 'renderer/hooks/useMinionListHelper';
+import { api } from 'utils/api';
 
 // Import Styles
 import { FilterText, getOptionColor } from './MinionsList.styles';
-
-export const fake = [
-  { key: 'abc', status: 'Accepted' },
-  { key: 'def', status: 'Rejected' },
-  { key: 'ghi', status: 'Requested' },
-  { key: 'ghi', status: 'Requested' },
-  { key: 'ghi', status: 'Requested' },
-].map(({ key, status }) => ({
-  name: `name_${key}`,
-  email: `email_${key}`,
-  ip: `ip_${key}`,
-  status,
-}));
 
 export enum SelectedMinionListEnum {
   All = 'All',
@@ -36,20 +21,60 @@ export enum SelectedMinionListEnum {
   Rejected = 'Rejected',
   Requested = 'Requested',
 }
-export type SelectedMinionListType = keyof typeof SelectedMinionListEnum;
 
-// const dropdownOptions = [
-//   {
-//     key: '1',
-//     label: <div>Accept</div>,
-//     icon: <CheckCircleOutlined />,
-//   },
-//   {
-//     key: '2',
-//     label: <div>Reject</div>,
-//     icon: <CloseCircleOutlined />,
-//   },
-// ];
+const remapAndFilterKeys = (
+  filter: SelectedMinionListType,
+  dataSource: {
+    acceptedKeys: string[];
+    deniedKeys: string[];
+    unacceptedKeys: string[];
+    rejectedKeys: string[];
+  }
+): {
+  key: string;
+  status: SelectedMinionListEnum;
+}[] => {
+  const mappedSource = {
+    acceptedKeys: dataSource.acceptedKeys.map((key) => ({
+      key,
+      status: SelectedMinionListEnum.Accepted,
+    })),
+    rejectedKeys: dataSource.rejectedKeys.map((key) => ({
+      key,
+      status: SelectedMinionListEnum.Rejected,
+    })),
+    deniedKeys: dataSource.rejectedKeys.map((key) => ({
+      key,
+      status: SelectedMinionListEnum.Rejected,
+    })),
+    unacceptedKeys: dataSource.unacceptedKeys.map((key) => ({
+      key,
+      status: SelectedMinionListEnum.Requested,
+    })),
+  };
+  console.log('mappedSource', mappedSource);
+  let data: {
+    key: string;
+    status: SelectedMinionListEnum;
+  }[] = [];
+
+  switch (filter) {
+    case SelectedMinionListEnum.All:
+      data = [...Object.values(mappedSource).flat()];
+      break;
+    case SelectedMinionListEnum.Accepted:
+      data = [...mappedSource['acceptedKeys']];
+      break;
+    case SelectedMinionListEnum.Rejected:
+      data = [...mappedSource['deniedKeys'], ...mappedSource['rejectedKeys']];
+      break;
+    case SelectedMinionListEnum.Requested:
+      data = [...mappedSource['unacceptedKeys']];
+  }
+  return data;
+};
+
+export type SelectedMinionListType = keyof typeof SelectedMinionListEnum;
 
 const MinionsList: React.FC = ({}) => {
   const [selectedFilter, setSelectedFilter] = useState<SelectedMinionListType>(
@@ -57,13 +82,62 @@ const MinionsList: React.FC = ({}) => {
   );
   const navigate = useNavigate();
 
-  const { filterData, saltKeys, status } = useMinionListHelper();
+  const {
+    isLoading,
+    isError,
+    error,
+    data,
+    refetch: refetchKeys,
+  } = useQuery(['keys'], () =>
+    api.get('/api/salt/keys').then((res) => res.data)
+  );
 
-  if (status === 'loading') {
+  const acceptKeyApi = useMutation(
+    ({ keys }: { keys: string[] | 'All' }) =>
+      api.post('/api/salt/keys/accept', { keys }).then((res) => res.data),
+    {
+      onSuccess: () => {
+        message.success('Key accepted');
+        refetchKeys();
+      },
+      onError: (err) => {
+        message.success('Failed to accept keys');
+        console.error('[Accept keys]', err);
+      },
+    }
+  );
+  const rejectKeyApi = useMutation(
+    ({ keys }: { keys: string[] | 'All' }) =>
+      api.post('/api/salt/keys/reject', { keys }).then((res) => res.data),
+    {
+      onSuccess: () => {
+        message.info('Key Rejected');
+        refetchKeys();
+      },
+      onError: (err) => {
+        message.success('Failed to accept keys');
+        console.error('[Reject keys]', err);
+      },
+    }
+  );
+  useEffect(() => {
+    console.log('keys data', data?.data);
+    // console.log(
+    //   'getFilteredData(selectedFilter, data)',
+    //   remapAndFilterKeys(selectedFilter, data.data)
+    // );
+  }, [data]);
+
+  useEffect(() => {
+    if (!error) return;
+    console.error('[GET ALL KEYS]', error);
+  }, [error]);
+
+  if (isLoading) {
     return <Spin size="large" />;
   }
 
-  if (status === 'error') {
+  if (isError) {
     return <div>Error</div>;
   }
 
@@ -109,10 +183,11 @@ const MinionsList: React.FC = ({}) => {
           // loading={initLoading}
           itemLayout="horizontal"
           // loadMore={loadMore}
-          dataSource={filterData(fake, selectedFilter)}
+          dataSource={remapAndFilterKeys(selectedFilter, data.data)}
           renderItem={(item) => (
             <List.Item
               style={{
+                cursor: 'pointer',
                 padding: '20px',
                 margin: '10px',
                 // borderRadius: '10px',
@@ -124,7 +199,7 @@ const MinionsList: React.FC = ({}) => {
                 //       }),
               }}
               onClick={() => {
-                navigate(`minion/${item.email}`);
+                navigate(`minion/${item.key}`);
               }}
               actions={
                 item.status.toLowerCase() !== 'requested'
@@ -150,12 +225,24 @@ const MinionsList: React.FC = ({}) => {
                         }}
                       >
                         <CheckCircleFilled
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            acceptKeyApi.mutate({
+                              keys: [item.key],
+                            });
+                          }}
                           style={{
                             color: green.primary,
                           }}
                         />
 
                         <CloseCircleFilled
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            rejectKeyApi.mutate({
+                              keys: [item.key],
+                            });
+                          }}
                           style={{
                             color: red.primary,
                           }}
@@ -185,12 +272,8 @@ const MinionsList: React.FC = ({}) => {
               }
             >
               {/* <Skeleton avatar title={false} loading={item.loading} active> */}
-              <List.Item.Meta
-                // avatar={<Avatar src={item.picture.large} />}
-                title={item.name}
-                description={item.ip}
-              />
-              <div>{item.email}</div>
+              <List.Item.Meta title={item.key} description={item.key} />
+              {/* <div>{item.email}</div> */}
               {/* </Skeleton> */}
             </List.Item>
           )}
@@ -201,3 +284,103 @@ const MinionsList: React.FC = ({}) => {
 };
 
 export default MinionsList;
+{
+  /* <List
+className="demo-loadmore-list"
+// loading={initLoading}
+itemLayout="horizontal"
+// loadMore={loadMore}
+dataSource={getFilteredData(selectedFilter, data)}
+renderItem={(item) => (
+  <List.Item
+    style={{
+      cursor: 'pointer',
+      padding: '20px',
+      margin: '10px',
+      // borderRadius: '10px',
+      // backgroundColor:
+      //   item.status.toLowerCase() === 'requested'
+      //     ? 'white'
+      //     : getOptionColor(item.status as SelectedMinionListType, {
+      //         index: 3,
+      //       }),
+    }}
+    onClick={() => {
+      navigate(`minion/${item.email}`);
+    }}
+    actions={
+      item.status.toLowerCase() !== 'requested'
+        ? [
+            <Tag
+              color={getOptionColor(
+                item.status as SelectedMinionListType
+              )}
+              style={{
+                borderRadius: '30px',
+              }}
+            >
+              {item.status}
+            </Tag>,
+          ]
+        : [
+            <div
+              style={{
+                fontSize: '30px',
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                width: '100px',
+              }}
+            >
+              <CheckCircleFilled
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                style={{
+                  color: green.primary,
+                }}
+              />
+
+              <CloseCircleFilled
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                style={{
+                  color: red.primary,
+                }}
+              />
+            </div>,
+            // <Dropdown
+            //   overlay={<Menu items={dropdownOptions} />}
+            //   disabled={item.status !== 'Requested'}
+            // >
+            //   <Space>
+            //     <p
+            //       style={{
+            //         color:
+            //           item.status === 'Requested'
+            //             ? blue.primary
+            //             : grey.primary,
+            //         margin: 0,
+            //       }}
+            //       onClick={(e) => e.stopPropagation()}
+            //     >
+            //       Action
+            //     </p>
+            //     <DownOutlined />
+            //   </Space>
+            // </Dropdown>,
+          ]
+    }
+  >
+    {/* <Skeleton avatar title={false} loading={item.loading} active> */
+}
+//     <List.Item.Meta
+//       // avatar={<Avatar src={item.picture.large} />}
+//       title={item.name}
+//       description={item.ip}
+//     />
+//     <div>{item.email}</div>
+//     {/* </Skeleton> */}
+//   </List.Item>
+// )}
+// /> */}

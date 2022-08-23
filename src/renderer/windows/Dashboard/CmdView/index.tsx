@@ -1,8 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { Input, message, Select, Space } from 'antd';
 import React, { useState } from 'react';
 import { ReactTerminal, TerminalContextProvider } from 'react-terminal';
+import { api } from 'utils/api';
 import { CmdViewLayout } from './CmdView.styles';
-
+// import Terminal from 'terminal-in-react';
 const FAKE_minionGroups = {
   All: 'All',
   Developers: 'Developers',
@@ -18,6 +20,24 @@ const CmdView: React.FC = ({}) => {
   const [customRegex, setCustomRegex] = useState('');
   const [customSelected, setCustomSelected] = useState(false);
   const [allSelected, setAllSelected] = useState(false);
+
+  const runCmdApi = useMutation(
+    ({ saltIds, cmd }: { saltIds: string[]; cmd: String }) =>
+      api
+        .post('/api/salt/run-cmd', {
+          saltIds,
+          cmd,
+        })
+        .then((res) => res.data),
+    {
+      onSuccess(data) {
+        console.log('DATA', data);
+      },
+      onError(err) {
+        console.error('[RUN CMD ]', err);
+      },
+    }
+  );
 
   const handleSelect = (key: string) => {
     console.log(allSelected);
@@ -65,7 +85,10 @@ const CmdView: React.FC = ({}) => {
       message.error('Please select a group');
       return;
     }
-
+    runCmdApi.mutate({
+      cmd,
+      saltIds: ['pop-os.localdomain'], //! fix set acc to selected group
+    });
     console.log('CMD RUN ', cmd);
   };
   return (
@@ -122,6 +145,24 @@ const CmdView: React.FC = ({}) => {
             />
           </div>
         </TerminalContextProvider>
+        {/* <Terminal
+          color="green"
+          backgroundColor="black"
+          barColor="black"
+          style={{ fontWeight: 'bold', fontSize: '1em' }}
+          // commands={{
+          //   'open-google': () => window.open('https://www.google.com/', '_blank'),
+          //   showmsg: this.showMsg,
+          //   popup: () => alert('Terminal in React')
+          // }}
+          descriptions={{
+            'open-google': 'opens google.com',
+            showmsg: 'shows a message',
+            alert: 'alert',
+            popup: 'alert',
+          }}
+          msg="You can write anything here. Example - Hello! My name is Foo and I like Bar."
+        /> */}
         {/* <TextArea rows={4} placeholder="maxLength is 6" maxLength={6} /> */}
       </Space>
     </CmdViewLayout>

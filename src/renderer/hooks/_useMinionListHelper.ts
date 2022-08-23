@@ -1,9 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import {
   fake,
   SelectedMinionListType,
 } from 'renderer/windows/Dashboard/MinionsList/MinionsList';
-import { getSaltKeys } from 'utils/helperFunctions';
+import { api } from 'utils/api';
 
 const useMinionListHelper = () => {
   const [saltKeys, setSaltKeys] = useState<Record<string, string[]> | null>(
@@ -13,12 +14,18 @@ const useMinionListHelper = () => {
     'idle' | 'loading' | 'error' | 'success'
   >('idle');
 
+  const getAllKeys = useQuery(['keys'], () =>
+    api.get('/api/salt/keys').then((res) => res.data)
+  );
+
   const getKeys = async () => {
     try {
       setStatus('loading');
-      const keys = await getSaltKeys();
+
+      // const keys = await getSaltKeys();
+
       setStatus('success');
-      return keys;
+      // return keys;
     } catch (error: any) {
       console.log(error.message);
       setStatus('error');
@@ -27,9 +34,9 @@ const useMinionListHelper = () => {
   };
 
   const setKeys = async () => {
-    const keys = await getKeys();
-    console.log(keys, 'keys');
-    setSaltKeys(keys);
+    // const keys = await getKeys();
+    // console.log(keys, 'keys');
+    // setSaltKeys(keys);
   };
 
   useEffect(() => {

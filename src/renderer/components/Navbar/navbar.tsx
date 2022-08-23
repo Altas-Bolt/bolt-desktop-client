@@ -23,6 +23,10 @@ const navItems = [
     key: '/dashboard/profile',
     label: 'profile',
   },
+  {
+    key: '/dashboard/create_emp',
+    label: 'new emp',
+  },
 ];
 
 const Navbar: React.FC = ({}) => {

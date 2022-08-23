@@ -1,10 +1,14 @@
+import { useMutation } from '@tanstack/react-query';
+import { message } from 'antd';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { api } from 'utils/api';
 import store from 'utils/store/store';
+import { useAppContext } from './appContext';
 
 interface IAuthContext {
-  email: string;
-  signin: (email: string, password: string) => boolean;
-  signout: () => boolean;
+  token: string;
+  signin: (token: string, password: string) => void;
+  signout: () => void;
   isSignedin: () => boolean;
 }
 
@@ -21,35 +25,56 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{
   children: React.ReactElement | React.ReactElement[];
 }> = ({ children }) => {
-  const [email, setEmail] = useState<string>('');
+  const [token, _setToken] = useState<string>('');
+  const { setUser } = useAppContext();
+
+  const setToken = (token: string) => {
+    _setToken(token);
+    if (!token) {
+      store.delete('token');
+    } else store.set('token', token);
+  };
+
+  const { mutate: login } = useMutation(
+    ({ email, password }: { email: string; password: string }) =>
+      api
+        .post('/bolt/users/login', {
+          email,
+          password,
+        })
+        .then((res) => res.data),
+    {
+      onError: (err: any) => {
+        message.error(err.response.data.message);
+      },
+      onSuccess: ({ data }) => {
+        setUser(data);
+        setToken(data.accessToken);
+      },
+    }
+  );
 
   useEffect(() => {
     const token = store.get('token');
-    setEmail(token);
+    setToken(token);
   }, []);
-  useEffect(() => {
-    console.log('email', email);
-  }, [email]);
 
   const signin = (email: string, password: string) => {
-    setEmail(email);
-    store.set('token', email);
-    return true;
+    login({ email, password });
   };
+
   const isSignedin = () => {
-    return !!store.get('token');
+    return !!token;
   };
 
   const signout = () => {
-    setEmail('');
-    store.set('token', '');
-    return true;
+    setToken('');
   };
 
   return (
     <AuthContext.Provider
       value={{
-        email,
+        token,
         signin,
         signout,
         isSignedin,

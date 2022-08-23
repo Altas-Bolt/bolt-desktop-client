@@ -1,6 +1,6 @@
 // Import Modules
 import { Button, Form, Input } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'renderer/context/authContext';
 
@@ -17,34 +17,10 @@ const Login = () => {
     console.log(location);
   }, [location]);
 
-  const [status, setStatus] = useState<
-    'loading' | 'error' | 'success' | 'idle'
-  >('idle');
   const navigate = useNavigate();
   const auth = useAuth();
 
-  // const handleGetStarted = async () => {
-  //   setStatus('loading');
-  //   const isInstalled = await isSaltMasterInstalled();
-
-  //   if (isInstalled) {
-  //     message.success('Installation Found');
-  //     setStatus('success');
-  //     navigate('/dashboard');
-  //   } else {
-  //     setStatus('error');
-  //   }
-  // };
-
-  // if (!checkCompleted)
-  //   return (
-  //     <HomeWrapper>
-  //       <Spin size="large" />
-  //     </HomeWrapper>
-  //   );
-
   useEffect(() => {
-    console.log('here', auth.isSignedin());
     if (auth.isSignedin()) {
       navigate('/dashboard');
     }
@@ -55,11 +31,7 @@ const Login = () => {
     password: string;
     remember?: boolean;
   }) => {
-    // console.log('here', val);
-    const success = auth.signin(val.username, val.password);
-    // if(success){
-    //   navigate('/dashboard')
-    // }
+    auth.signin(val.username, val.password);
   };
   return (
     <LoginWrapper>
@@ -67,21 +39,12 @@ const Login = () => {
         <h1>Bolt.</h1>
       </div>
       <div className="action">
-        {/* <Button
-          type="primary"
-          size="large"
-          loading={status === 'loading'}
-          onClick={handleGetStarted}
-        >
-          Get Started
-        </Button> */}
         <Form
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item

@@ -12,7 +12,6 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
   return (
     <RegisterMinionWrapper>
       <div>
-        <h1></h1>
         <PageHeader
           className="site-page-header"
           onBack={() => null}
@@ -20,6 +19,7 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
           backIcon={null}
         />
       </div>
+
       <div className="formSection">
         <Form
           name="basic"

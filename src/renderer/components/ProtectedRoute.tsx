@@ -11,7 +11,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth.email) {
+    console.log('nav: ', auth.isSignedin());
+    if (!auth.isSignedin()) {
       navigate('/');
     }
   }, [auth]);

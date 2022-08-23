@@ -1,4 +1,4 @@
-import { List } from 'antd';
+import { Button, List } from 'antd';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { MinionProfile } from 'renderer/components/MinionProfile';
@@ -23,12 +23,7 @@ const MinionView: React.FC = () => {
         // loadMore={loadMore}
         dataSource={fake}
         renderItem={(item) => (
-          <List.Item
-            actions={[
-              <a key="list-loadmore-edit">edit</a>,
-              <a key="list-loadmore-more">more</a>,
-            ]}
-          >
+          <List.Item actions={[<Button>Remove</Button>]}>
             {/* <Skeleton avatar title={false} loading={item.loading} active> */}
             <List.Item.Meta
               // avatar={<Avatar src={item.picture.large} />}

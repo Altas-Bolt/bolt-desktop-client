@@ -18,6 +18,7 @@ import Login from './windows/Login/Login';
 import { AdminProfile } from './windows/Dashboard/AdminProfile/AdminProfile';
 import { AppProvider } from './context/appContext';
 import CreateEmp from './windows/Dashboard/CreateEmployee/CreateEmp';
+import ScanReports from './windows/Dashboard/ScanReports/ScanReports';
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ export default function App() {
                 <Route index element={<MinionsList />} />
                 <Route path="profile" element={<AdminProfile />} />
                 <Route path="cmd" element={<CmdView />} />
+                <Route path="scans" element={<ScanReports />} />
                 <Route path="minion">
                   <Route index element={<Minion />} />
                   <Route path=":minionId" element={<MinionView />} />

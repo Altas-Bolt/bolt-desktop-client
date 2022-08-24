@@ -41,4 +41,14 @@ export const ScanReportLayout = styled.div`
     width: 100%;
     margin-top: 32px;
   }
+
+  .row {
+    flex-direction: row;
+    display: flex;
+  }
+
+  .refresh-button {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
 `;

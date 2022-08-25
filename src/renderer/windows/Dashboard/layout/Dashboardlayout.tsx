@@ -9,13 +9,10 @@ import {
   ThunderboltOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import Navbar from 'renderer/components/Navbar/navbar';
 import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
-import { api } from 'utils/api';
 
 // Import Styles
 import { DashboardlayoutWrapper } from './Dashboardlayout.styles';
@@ -33,18 +30,14 @@ const items2 = [
     label: 'Keys',
     icon: <KeyOutlined />,
   },
-  // {
-  //   key: '/dashboard/minion',
-  //   label: 'minion',
-  //   icon:
-  // },
+
   {
     key: '/dashboard/cmd',
     label: 'cmd',
     icon: <CreditCardOutlined />,
   },
   {
-    key: '/dashboard/minion/register',
+    key: '',
     label: 'register',
     icon: <LaptopOutlined />,
     children: [
@@ -70,39 +63,22 @@ const items2 = [
     label: 'Scan Reports',
     icon: <PieChartOutlined />,
   },
+  {
+    key: '/dashboard/add',
+    label: 'Add device',
+    icon: <PieChartOutlined />,
+  },
 ];
-
-// const items2: MenuProps['items'] = [
-//   UserOutlined,
-//   LaptopOutlined,
-//   NotificationOutlined,
-// ].map((icon, index) => {
-//   const key = String(index + 1);
-
-//   return {
-//     key: `sub${key}`,
-//     icon: React.createElement(icon),
-//     label: `subnav ${key}`,
-
-//     children: new Array(4).fill(null).map((_, j) => {
-//       const subKey = index * 4 + j + 1;
-//       return {
-//         key: subKey,
-//         label: `option${subKey}`,
-//       };
-//     }),
-//   };
-// });
 
 const Dashboardlayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const scan = useQuery(
-    ['scanss'],
-    () => api.post('/api/salt/linux-scan', {}),
-    { refetchInterval: 30000 }
-  );
+  // const scan = useQuery(
+  //   ['scanss'],
+  //   () => api.post('/api/salt/linux-scan', {}),
+  //   { refetchInterval: 30000 }
+  // );
   return (
     <ProtectedRoute>
       <DashboardlayoutWrapper>
@@ -123,7 +99,7 @@ const Dashboardlayout = () => {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 items={items2}
-                onClick={({ item, key }) => {
+                onClick={({ key }) => {
                   navigate(key);
                 }}
               />

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, message, PageHeader, Select } from 'antd';
 import React, { useState } from 'react';
-import { IMinion, OSEnum } from 'types/types';
+import { OSEnum } from 'types/types';
 import { api } from 'utils/api';
 import { RegisterMinionWrapper } from './RegisterMinion.styles';
 
@@ -19,7 +19,6 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
         .then((res) => res.data),
     {
       onSuccess: ({ data }) => {
-        // console.log(data);
         message.success('minion registered successful');
         setMinionId(data.saltId);
       },
@@ -32,8 +31,6 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
       os,
       ip,
     });
-
-    // console.log(os, ip);
   };
 
   return (

@@ -9,7 +9,6 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Dropdown, List, Menu, message, Space, Spin, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api } from 'utils/api';
 
 // Import Styles
@@ -70,8 +69,8 @@ const remapAndFilterKeys = (
       break;
     case SelectedMinionListEnum.Requested:
       data = [...mappedSource['unacceptedKeys']];
-    break;
-    }
+      break;
+  }
   return data;
 };
 
@@ -81,7 +80,6 @@ const MinionsList: React.FC = ({}) => {
   const [selectedFilter, setSelectedFilter] = useState<SelectedMinionListType>(
     SelectedMinionListEnum.All
   );
-  const navigate = useNavigate();
 
   const {
     isLoading,
@@ -121,13 +119,6 @@ const MinionsList: React.FC = ({}) => {
       },
     }
   );
-  useEffect(() => {
-    console.log('keys data', data?.data);
-    // console.log(
-    //   'getFilteredData(selectedFilter, data)',
-    //   remapAndFilterKeys(selectedFilter, data.data)
-    // );
-  }, [data]);
 
   useEffect(() => {
     if (!error) return;
@@ -200,7 +191,7 @@ const MinionsList: React.FC = ({}) => {
                 //       }),
               }}
               onClick={() => {
-                navigate(`minion/${item.key}`);
+                // navigate(`minion/${item.key}`);
               }}
               actions={
                 item.status.toLowerCase() !== 'requested'

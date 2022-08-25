@@ -82,7 +82,7 @@ export const HomeLayout = styled.div`
 
     border-radius: 10px;
     /* min-height: 120px; */
-    padding: 0.5rem;
+    padding: 1rem;
 
     .tag {
       box-shadow: -6px 21px 74px 4px rgba(0, 0, 0, 0.36);

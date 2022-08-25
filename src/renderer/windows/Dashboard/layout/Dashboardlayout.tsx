@@ -2,31 +2,35 @@
 import {
   CreditCardOutlined,
   HomeOutlined,
+  KeyOutlined,
   LaptopOutlined,
-  NotificationOutlined,
   PieChartOutlined,
   ProfileOutlined,
-  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
-import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import Navbar from 'renderer/components/Navbar/navbar';
 import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
 import { api } from 'utils/api';
-const { Header, Content, Sider } = Layout;
 
 // Import Styles
 import { DashboardlayoutWrapper } from './Dashboardlayout.styles';
 
+const { Header, Content, Sider } = Layout;
+
 const items2 = [
   {
     key: '/dashboard',
-    label: 'dashboard',
+    label: 'Dashboard',
     icon: <HomeOutlined />,
+  },
+  {
+    key: '/dashboard/keys',
+    label: 'Keys',
+    icon: <KeyOutlined />,
   },
   // {
   //   key: '/dashboard/minion',

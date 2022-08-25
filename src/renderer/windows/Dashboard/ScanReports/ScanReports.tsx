@@ -280,6 +280,13 @@ const ScanReports = () => {
       key: 'email',
       ...getColumnSearchProps('employeeEmail'),
     },
+    {
+      title: 'IP Address',
+      dataIndex: 'minion_ip',
+      key: 'ip',
+      render: () => <p>192.168.198.51</p>,
+      ...getColumnSearchProps('minion_ip'),
+    },
   ];
 
   const byEmployeesViewColumn: ColumnsType<any> = [
@@ -336,6 +343,13 @@ const ScanReports = () => {
       key: 'undecided',
       sorter: (a, b) => a.softwareCount_undecided - b.softwareCount_undecided,
       sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'IP Address',
+      dataIndex: 'minion_ip',
+      key: 'ip',
+      render: () => <p>192.168.198.51</p>,
+      ...getColumnSearchProps('minion_ip'),
     },
   ];
 

@@ -82,7 +82,7 @@ export const HomeLayout = styled.div`
 
     border-radius: 10px;
     /* min-height: 120px; */
-    padding: 1rem;
+    padding: 0.5rem;
 
     .tag {
       box-shadow: -6px 21px 74px 4px rgba(0, 0, 0, 0.36);
@@ -116,6 +116,7 @@ export const HomeLayout = styled.div`
       display: flex;
       align-items: center;
       margin-left: 2rem;
+      flex-grow: 1;
     }
 
     .action {
@@ -129,17 +130,19 @@ export const HomeLayout = styled.div`
       border-right: 0.5px solid #fff;
       display: flex;
       flex-direction: column;
-      min-width: 200px;
+
+      &:first-child {
+        width: 50%;
+      }
 
       &:last-child {
         border-right: none;
       }
 
       p {
-        margin: 0 1rem;
+        margin: 0;
+        margin-left: 1rem;
       }
-
-      /* align-items: center; */
 
       .key {
         /* text-align: center; */

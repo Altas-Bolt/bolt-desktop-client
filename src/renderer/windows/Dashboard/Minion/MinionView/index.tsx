@@ -3,7 +3,7 @@ import { Button, List, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MinionProfile } from 'renderer/components/MinionProfile';
-import { IMinionTable, IScanMinionSoftwaresTable } from 'types/types';
+import { IMinion } from 'types/types';
 import { api } from 'utils/api';
 
 const fake = [{ key: 'abc' }, { key: 'def' }, { key: 'ghi' }].map(
@@ -14,7 +14,7 @@ const fake = [{ key: 'abc' }, { key: 'def' }, { key: 'ghi' }].map(
   })
 );
 const MinionView: React.FC = () => {
-  const [minion, setMinion] = useState<IMinionTable | null>(null);
+  const [minion, setMinion] = useState<IMinion | null>(null);
   // const [scanMeta, setSacnMeta] = useState<IScanMinionSoftwaresTable | null>(
   //   null
   // );

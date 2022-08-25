@@ -1,10 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { Collapse, Input, message, Select, Space } from 'antd';
+import { Input, message, Select, Space } from 'antd';
 import React, { useState } from 'react';
+import Terminal from 'terminal-in-react';
 import { api } from 'utils/api';
 import { CmdOutputWrapper, CmdViewLayout } from './CmdView.styles';
-import Terminal from 'terminal-in-react';
-import { green } from '@ant-design/colors';
 const FAKE_minionGroups = {
   All: 'All',
   Developers: 'Developers',

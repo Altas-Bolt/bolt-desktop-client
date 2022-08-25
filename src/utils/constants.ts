@@ -6,5 +6,5 @@ export const enum LOCAL_STORAGE_KEYS {
   JWT = 'jwt',
 }
 
-export const SERVER_URL = 'http://54.172.237.22:3000';
-// export const SERVER_URL = 'http://localhost:3000';
+// export const SERVER_URL = 'http://13.232.199.150:3000';
+export const SERVER_URL = 'http://localhost:3000';

@@ -1,12 +1,39 @@
-import { Button, Form, Input, PageHeader } from 'antd';
-import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { Button, Form, Input, message, PageHeader, Select } from 'antd';
+import React, { useState } from 'react';
+import { IMinion, OSEnum } from 'types/types';
+import { api } from 'utils/api';
 import { RegisterMinionWrapper } from './RegisterMinion.styles';
 
 interface RegisterMinionProps {}
 
 export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
-  const onFinish = () => {
-    console.log('');
+  const [minionId, setMinionId] = useState<string | null>(null);
+  const registerMinionMutation = useMutation(
+    ({ os, ip }: { os: keyof typeof OSEnum; ip: string }) =>
+      api
+        .post('/bolt/minions/create', {
+          os,
+          ip,
+        })
+        .then((res) => res.data),
+    {
+      onSuccess: ({ data }) => {
+        // console.log(data);
+        message.success('minion registered successful');
+        setMinionId(data.saltId);
+      },
+    }
+  );
+
+  const onFinish = ({ os, ip }: { os: keyof typeof OSEnum; ip: string }) => {
+    console.log(os);
+    registerMinionMutation.mutate({
+      os,
+      ip,
+    });
+
+    // console.log(os, ip);
   };
 
   return (
@@ -32,7 +59,7 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
         >
           <Form.Item
             label="ipv4"
-            name="ipv4"
+            name="ip"
             rules={[
               { required: true, message: 'Please input the minion ipv4!' },
             ]}
@@ -42,19 +69,31 @@ export const RegisterMinion: React.FC<RegisterMinionProps> = ({}) => {
 
           <Form.Item
             label="OS"
-            name="OS"
+            name="os"
             rules={[{ required: true, message: 'Please input the minion OS!' }]}
           >
-            <Input />
+            <Select
+              style={{ width: 120 }}
+              // onChange={handleChange}
+            >
+              {Object.values(OSEnum).map((os: string) => (
+                <Select.Option key={os}>{os}</Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
+            <Button
+              disabled={registerMinionMutation.isLoading}
+              type="primary"
+              htmlType="submit"
+            >
+              {registerMinionMutation.isLoading ? 'Loading' : 'Submit'}
             </Button>
           </Form.Item>
         </Form>
       </div>
+      <div>{minionId && <h2>Minion Id: {minionId}</h2>}</div>
     </RegisterMinionWrapper>
   );
 };

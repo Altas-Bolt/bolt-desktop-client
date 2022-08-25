@@ -21,7 +21,7 @@ export enum OSEnum {
   LINUX = 'linux',
   WINDOWS = 'windows',
 }
-export interface IMinionTable {
+export interface IMinion {
   id: string;
   os: OSEnum;
   ip: string;

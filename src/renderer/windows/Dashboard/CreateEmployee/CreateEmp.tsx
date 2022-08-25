@@ -172,8 +172,8 @@ const CreateEmp = () => {
                 );
               }
               return (
-                <Select.Option key={label.id} value={label.id}>
-                  {label.id}
+                <Select.Option key={label.saltId} value={label.saltId}>
+                  {label.saltId}
                 </Select.Option>
               );
             })}

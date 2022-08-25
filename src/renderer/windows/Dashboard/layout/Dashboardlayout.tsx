@@ -6,6 +6,7 @@ import {
   LaptopOutlined,
   PieChartOutlined,
   ProfileOutlined,
+  ThunderboltOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu } from 'antd';
@@ -82,13 +83,17 @@ const Dashboardlayout = () => {
     <ProtectedRoute>
       <DashboardlayoutWrapper>
         <Layout style={{ height: '100vh' }}>
-          <Header className="header">
+          {/* <Header className="header">
             <div className="logo" />
             {/* <Navbar /> */}
-          </Header>
+          {/* </Header> */}
           <Layout>
             <Sider width={200} className="site-layout-background">
+              <div className="logo-container">
+                <h1>Bolt.</h1>
+              </div>
               <Menu
+                theme="dark"
                 mode="inline"
                 defaultSelectedKeys={['1']}
                 defaultOpenKeys={['sub1']}

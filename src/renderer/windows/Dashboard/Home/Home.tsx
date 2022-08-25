@@ -1,15 +1,18 @@
-import { ProfileOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import {
+  AlertOutlined,
+  ProfileOutlined,
+  UserDeleteOutlined,
+} from '@ant-design/icons';
 import { Avatar, Button } from 'antd';
 import { useAuth } from 'renderer/context/authContext';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
 
-const AlertCard = ({ day, date, flag, email, softwareName }) => {
+const AlertCard = ({ flag, email, softwareName }) => {
   return (
     <div className="alert-card">
-      <div className="tag">
-        <p className="day">{day}</p>
-        <p className="date">{date}</p>
+      <div className="icon">
+        <AlertOutlined size={42} />
       </div>
       <div className="meta">
         <div className="data">
@@ -43,22 +46,41 @@ const Home = () => {
           <h2>Recent Alerts</h2>
           <div className="cards-grid">
             <AlertCard
-              day={'Mon'}
-              date={'26'}
               flag="blacklisted"
               email={'aniket.biswas75@gmail.com'}
               softwareName={'PUBG'}
             />
             <AlertCard
-              day={'Tue'}
-              date={'27'}
               flag="blacklisted"
               email={'rishabh@gmail.com'}
               softwareName={'DOS'}
             />
             <AlertCard
-              day={'Wed'}
-              date={'28'}
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
               flag="blacklisted"
               email={'sjain@gmail.com'}
               softwareName={'Instagram'}

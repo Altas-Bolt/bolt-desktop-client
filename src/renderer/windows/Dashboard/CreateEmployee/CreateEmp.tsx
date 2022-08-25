@@ -38,6 +38,9 @@ const CreateEmp = () => {
 
   return (
     <div>
+      <h1 style={{ fontSize: '1.6rem', textAlign: 'center' }}>
+        Create an Employee
+      </h1>
       <Form
         labelCol={{
           span: 4,
@@ -160,11 +163,18 @@ const CreateEmp = () => {
             </div>
           </Upload>
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+        {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}> */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Button type="primary" htmlType="submit" style={{ width: '300px' }}>
             Submit
           </Button>
-        </Form.Item>
+        </div>
+        {/* </Form.Item> */}
       </Form>
 
       <h1>{genPassword}</h1>

@@ -7,3 +7,4 @@ export const enum LOCAL_STORAGE_KEYS {
 }
 
 export const SERVER_URL = 'http://54.172.237.22:3000';
+// export const SERVER_URL = 'http://localhost:3000';

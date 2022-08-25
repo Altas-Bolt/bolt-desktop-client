@@ -9,7 +9,6 @@ const CreateEmp = () => {
   const { data, error, isLoading } = useQuery(['minions'], () => {
     return api.get('/bolt/minions/all');
   });
-  console.log('SAB', data?.data?.data);
   const [genPassword, setGenPassword] = useState<string>('');
   const submit = useMutation(
     ({

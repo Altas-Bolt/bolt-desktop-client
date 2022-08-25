@@ -3,10 +3,14 @@
 import { exec } from 'child_process';
 import { readFile } from 'fs/promises';
 import os from 'os';
-
+import ip from 'ip';
 export const isMac = () => os.platform() === 'darwin';
 
 export const isLinux = () => os.platform() === 'linux';
+
+export const getIpAddress = () => {
+  return ip.address();
+};
 
 export const getLinuxReleaseDetails = async () => {
   const res = await readFile('/etc/os-release', 'utf-8');

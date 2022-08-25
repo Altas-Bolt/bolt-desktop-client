@@ -2,6 +2,7 @@ import { Avatar, Button } from 'antd';
 import React from 'react';
 import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
+import { getIpAddress } from 'utils/helperFunctions';
 import { AdminProfileWrapper } from './AdminProfile.styles';
 
 interface AdminProfileProps {}
@@ -25,11 +26,11 @@ export const AdminProfile: React.FC<AdminProfileProps> = ({}) => {
             </div>
             <div className="info">
               <div className="section">
-                <h1 className="id">ID: SALT_ID_@#YTQ@U#@Y</h1>
-                <h1 className="ip">IPV4: 172.172.11.11</h1>
+                <h1 className="id">ID: 8b36311a</h1>
+                <h1 className="ip">IPV4: {getIpAddress()}</h1>
               </div>
               <div className="section">
-                <h1>Role: developer</h1>
+                <h1>Role: Admin</h1>
                 <h1>Email: rishabh@gmail.com</h1>
               </div>
             </div>

@@ -19,6 +19,7 @@ import { AdminProfile } from './windows/Dashboard/AdminProfile/AdminProfile';
 import { AppProvider } from './context/appContext';
 import CreateEmp from './windows/Dashboard/CreateEmployee/CreateEmp';
 import ScanReports from './windows/Dashboard/ScanReports/ScanReports';
+import Home from './windows/Dashboard/Home/Home';
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -31,7 +32,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/dashboard" element={<Dashboardlayout />}>
-                <Route index element={<MinionsList />} />
+                <Route index element={<Home />} />
+                <Route path="keys" element={<MinionsList />} />
                 <Route path="profile" element={<AdminProfile />} />
                 <Route path="cmd" element={<CmdView />} />
                 <Route path="scans" element={<ScanReports />} />

@@ -1,18 +1,19 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, Form, Input, message, Select, Upload } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Form, Input, message, Select } from 'antd';
 import { api } from 'utils/api';
-import { v4 as uuidv4 } from 'uuid';
-import { setFlagsFromString } from 'v8';
 
 const AddEmp = () => {
-  const { data, error, isLoading } = useQuery(['minions'], () => {
+  const { data } = useQuery(['minions'], () => {
     return api.get('/bolt/minions/all');
   });
   const addEmp = useMutation(
-    ({ id }: { id: string }) =>
-      api.put(`/minions/add-user/${id}`).then((res) => res.data),
+    ({ id, email }: { email: string; id: string }) =>
+      api
+        .put(`/bolt/minions/add-user/${id}`, {
+          email,
+        })
+        .then((res) => res.data),
     {
       onError: (err) => {
         console.error('[add emp tp minion]', err);
@@ -35,37 +36,51 @@ const AddEmp = () => {
           span: 14,
         }}
         layout="horizontal"
-        onFinish={(data) => {
-          console.log('data', data);
-          //           submit.mutate({
-          // id:
-          //           });
+        onFinish={({ email, id }) => {
+          console.log('data', email, id);
+          addEmp.mutate({ email, id });
         }}
       >
         <Form.Item
-          rules={[{ required: true }]}
-          name="minion_id"
-          label="Device Id"
+          rules={[{ type: 'email', required: true }]}
+          name="email"
+          label="Email"
         >
-          {/* <Select> */}
-          {(data?.data?.data || ['loading']).map((label: any) => {
-            if (label === 'loading') {
-              return (
-                <Select.Option key={label} value={label}>
-                  <LoadingOutlined />
-                </Select.Option>
-              );
+          <Input />
+        </Form.Item>
+        <Form.Item rules={[{ required: true }]} name="id" label="Device Id">
+          <Select
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option: any) =>
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0 ||
+              option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
-            return (
-              <button
-                onClick={() => addEmp.mutate({ id: label.saltId })}
-                key={label.saltId}
-              >
-                {label.saltId}
-              </button>
-            );
-          })}
-          {/* </Select> */}
+          >
+            {(data?.data?.data || ['loading']).map((label: any) => {
+              if (label === 'loading') {
+                return (
+                  <Select.Option key={label} value={label}>
+                    <LoadingOutlined />
+                  </Select.Option>
+                );
+              }
+
+              if (!label.saltId) {
+                console.info(
+                  '[addEmp minion list] no label.salt => ',
+                  label.salt
+                );
+                return null;
+              }
+
+              return (
+                <Select.Option key={label.id}>{label.saltId}</Select.Option>
+              );
+            })}
+          </Select>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">

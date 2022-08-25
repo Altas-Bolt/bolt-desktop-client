@@ -1,14 +1,11 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { PlusOutlined } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { Button, DatePicker, Form, Input, message, Select, Upload } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { api } from 'utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
 const CreateEmp = () => {
-  const { data, error, isLoading } = useQuery(['minions'], () => {
-    return api.get('/bolt/minions/all');
-  });
   const [genPassword, setGenPassword] = useState<string>('');
   const submit = useMutation(
     ({
@@ -52,9 +49,9 @@ const CreateEmp = () => {
         onFinish={(data) => {
           const pass = uuidv4();
           console.log('data', data);
+          //!FIX
           submit.mutate({
             email: data.email,
-            // password: data.password,
             password: pass,
             id: 'id - ' + data.email,
           });
@@ -62,15 +59,6 @@ const CreateEmp = () => {
           setGenPassword(pass);
         }}
       >
-        {/* <Form.Item label="Chekbox" name="disabled" valuePropName="checked">
-          <Checkbox>Checkbox</Checkbox>
-        </Form.Item> */}
-        {/* <Form.Item label="Radio">
-          <Radio.Group>
-            <Radio value="apple"> Apple </Radio>
-            <Radio value="pear"> Pear </Radio>
-          </Radio.Group>
-        </Form.Item> */}
         <Form.Item
           rules={[{ required: true, message: 'Please input your firstname!' }]}
           label="Firstname"
@@ -157,73 +145,7 @@ const CreateEmp = () => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          rules={[{ required: true }]}
-          name="minion_id"
-          label="Device Id"
-        >
-          <Select>
-            {(data?.data?.data || ['loading']).map((label) => {
-              if (label === 'loading') {
-                return (
-                  <Select.Option key={label} value={label}>
-                    <LoadingOutlined />
-                  </Select.Option>
-                );
-              }
-              return (
-                <Select.Option key={label.saltId} value={label.saltId}>
-                  {label.saltId}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-        {/* <Form.Item label="TreeSelect">
-          <TreeSelect
-            treeData={[
-              {
-                title: 'Light',
-                value: 'light',
-                children: [
-                  {
-                    title: 'Bamboo',
-                    value: 'bamboo',
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="Cascader">
-          <Cascader
-            options={[
-              {
-                value: 'zhejiang',
-                label: 'Zhejiang',
-                children: [
-                  {
-                    value: 'hangzhou',
-                    label: 'Hangzhou',
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
 
-        <Form.Item label="RangePicker">
-          <RangePicker />
-        </Form.Item>
-        <Form.Item label="InputNumber">
-          <InputNumber />
-        </Form.Item>
-        <Form.Item label="TextArea">
-          <TextArea rows={4} />
-        </Form.Item>
-        <Form.Item label="Switch" valuePropName="checked">
-          <Switch />
-        </Form.Item> */}
         <Form.Item label="Upload" valuePropName="fileList">
           <Upload action="/upload.do" listType="picture-card">
             <div>

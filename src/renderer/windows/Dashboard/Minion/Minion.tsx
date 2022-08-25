@@ -1,5 +1,4 @@
 import React from 'react';
-import { useAuth } from 'renderer/context/authContext';
 
 const Minion: React.FC = ({}) => {
   return (

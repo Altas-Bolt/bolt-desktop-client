@@ -1,41 +1,91 @@
 // Import Modules
 import {
+  CreditCardOutlined,
+  HomeOutlined,
   LaptopOutlined,
   NotificationOutlined,
+  PieChartOutlined,
+  ProfileOutlined,
+  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import Navbar from 'renderer/components/Navbar/navbar';
+// import Navbar from 'renderer/components/Navbar/navbar';
 import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
 const { Header, Content, Sider } = Layout;
 
 // Import Styles
 import { DashboardlayoutWrapper } from './Dashboardlayout.styles';
 
-const items2: MenuProps['items'] = [
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-].map((icon, index) => {
-  const key = String(index + 1);
+const items2 = [
+  {
+    key: '/dashboard',
+    label: 'dashboard',
+    icon: <HomeOutlined />,
+  },
+  // {
+  //   key: '/dashboard/minion',
+  //   label: 'minion',
+  //   icon:
+  // },
+  {
+    key: '/dashboard/cmd',
+    label: 'cmd',
+    icon: <CreditCardOutlined />,
+  },
+  {
+    key: '/dashboard/minion/register',
+    label: 'register',
+    icon: <LaptopOutlined />,
+    children: [
+      {
+        key: '/dashboard/minion/register',
+        label: 'Add minion',
+        icon: <LaptopOutlined />,
+      },
+      {
+        key: '/dashboard/create_emp',
+        label: 'Add employee',
+        icon: <UserOutlined />,
+      },
+    ],
+  },
+  {
+    key: '/dashboard/profile',
+    label: 'profile',
+    icon: <ProfileOutlined />,
+  },
+  {
+    key: '/dashboard/scans',
+    label: 'Scan Reports',
+    icon: <PieChartOutlined />,
+  },
+];
 
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
+// const items2: MenuProps['items'] = [
+//   UserOutlined,
+//   LaptopOutlined,
+//   NotificationOutlined,
+// ].map((icon, index) => {
+//   const key = String(index + 1);
 
-    children: new Array(4).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
+//   return {
+//     key: `sub${key}`,
+//     icon: React.createElement(icon),
+//     label: `subnav ${key}`,
+
+//     children: new Array(4).fill(null).map((_, j) => {
+//       const subKey = index * 4 + j + 1;
+//       return {
+//         key: subKey,
+//         label: `option${subKey}`,
+//       };
+//     }),
+//   };
+// });
 
 const Dashboardlayout = () => {
   const location = useLocation();
@@ -47,7 +97,7 @@ const Dashboardlayout = () => {
         <Layout style={{ height: '100vh' }}>
           <Header className="header">
             <div className="logo" />
-            <Navbar />
+            {/* <Navbar /> */}
           </Header>
           <Layout>
             <Sider width={200} className="site-layout-background">
@@ -57,6 +107,9 @@ const Dashboardlayout = () => {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 items={items2}
+                onClick={({ _item, key }) => {
+                  navigate(key);
+                }}
               />
             </Sider>
             <Layout style={{ padding: '0 24px 24px' }}>

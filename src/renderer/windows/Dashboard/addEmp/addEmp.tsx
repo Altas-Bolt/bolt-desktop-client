@@ -4,6 +4,7 @@ import { Button, DatePicker, Form, Input, message, Select, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { api } from 'utils/api';
 import { v4 as uuidv4 } from 'uuid';
+import { setFlagsFromString } from 'v8';
 
 const AddEmp = () => {
   const { data, error, isLoading } = useQuery(['minions'], () => {

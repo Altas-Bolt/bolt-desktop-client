@@ -107,7 +107,7 @@ const Dashboardlayout = () => {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 items={items2}
-                onClick={({ _item, key }) => {
+                onClick={({ item, key }) => {
                   navigate(key);
                 }}
               />

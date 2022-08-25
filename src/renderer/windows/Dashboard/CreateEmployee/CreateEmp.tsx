@@ -1,11 +1,15 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { useMutation } from '@tanstack/react-query';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, DatePicker, Form, Input, message, Select, Upload } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from 'utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
 const CreateEmp = () => {
+  const { data, error, isLoading } = useQuery(['minions'], () => {
+    return api.get('/bolt/minions/all');
+  });
+  console.log('SAB', data?.data?.data);
   const [genPassword, setGenPassword] = useState<string>('');
   const submit = useMutation(
     ({
@@ -160,11 +164,20 @@ const CreateEmp = () => {
           label="Device Id"
         >
           <Select>
-            {['minion_id_1', 'minion_id_2'].map((label) => (
-              <Select.Option key={label} value="demo">
-                {label}
-              </Select.Option>
-            ))}
+            {(data?.data?.data || ['loading']).map((label) => {
+              if (label === 'loading') {
+                return (
+                  <Select.Option key={label} value={label}>
+                    <LoadingOutlined />
+                  </Select.Option>
+                );
+              }
+              return (
+                <Select.Option key={label.id} value={label.id}>
+                  {label.id}
+                </Select.Option>
+              );
+            })}
           </Select>
         </Form.Item>
         {/* <Form.Item label="TreeSelect">

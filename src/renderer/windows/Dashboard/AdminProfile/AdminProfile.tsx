@@ -1,5 +1,6 @@
 import { Avatar, Button } from 'antd';
 import React from 'react';
+import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
 import { AdminProfileWrapper } from './AdminProfile.styles';
 
@@ -7,6 +8,7 @@ interface AdminProfileProps {}
 
 export const AdminProfile: React.FC<AdminProfileProps> = ({}) => {
   const auth = useAuth();
+  const { user } = useAppContext();
 
   return (
     <AdminProfileWrapper>

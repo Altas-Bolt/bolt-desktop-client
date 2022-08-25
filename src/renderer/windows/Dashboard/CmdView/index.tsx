@@ -68,6 +68,7 @@ const CmdView: React.FC = ({}) => {
     if (key === 'Custom') {
       setCustomSelected(false);
       setSelectedMinionGroups([]);
+      setCustomRegex('');
     }
     if (key === 'All') {
       setAllSelected(false);
@@ -114,7 +115,7 @@ const CmdView: React.FC = ({}) => {
                 <div>
                   <h1 className="cmdOutput cmdOutputHead">{key}</h1>
                   <div>
-                    {data.data[key].map((item) => (
+                    {data.data[key].map((item: string) => (
                       <h1 className="cmdOutput">{item}</h1>
                     ))}
                   </div>
@@ -231,6 +232,7 @@ const CmdView: React.FC = ({}) => {
           //   popup: 'alert',
           // }}
 
+          //@ts-ignore
           commandPassThrough={handleRun}
           msg="Enter cmd below"
         />

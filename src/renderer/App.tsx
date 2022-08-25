@@ -37,7 +37,7 @@ export default function App() {
                 <Route path="scans" element={<ScanReports />} />
                 <Route path="minion">
                   <Route index element={<Minion />} />
-                  <Route path=":minionId" element={<MinionView />} />
+                  <Route path=":minion_key" element={<MinionView />} />
                   <Route path="register" element={<RegisterMinion />} />
                 </Route>
                 <Route path="create_emp" element={<CreateEmp />} />

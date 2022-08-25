@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { Input, message, Select, Space } from 'antd';
+import { Collapse, Input, message, Select, Space } from 'antd';
 import React, { useState } from 'react';
-import { ReactTerminal, TerminalContextProvider } from 'react-terminal';
 import { api } from 'utils/api';
-import { CmdViewLayout } from './CmdView.styles';
-// import Terminal from 'terminal-in-react';
+import { CmdOutputWrapper, CmdViewLayout } from './CmdView.styles';
+import Terminal from 'terminal-in-react';
+import { green } from '@ant-design/colors';
 const FAKE_minionGroups = {
   All: 'All',
   Developers: 'Developers',
@@ -79,17 +79,84 @@ const CmdView: React.FC = ({}) => {
     }
   };
 
-  const handleRun = (cmd: string) => {
+  const handleRun = (cmdArray: string[], print: (val: any) => void) => {
     if (selectedMinionGroups.length === 0) {
       setSelectMinionGroupError(true);
       message.error('Please select a group');
       return;
     }
-    runCmdApi.mutate({
-      cmd,
-      saltIds: ['pop-os.localdomain'], //! fix set acc to selected group
-    });
-    console.log('CMD RUN ', cmd);
+
+    const saltIds: string[] = []; // ['red-hat-minion'], //! fix set acc to selected group
+    if (selectedMinionGroups[0] === 'All') {
+      saltIds.push('*');
+    } else if ((selectedMinionGroups[0] = 'Custom')) {
+      saltIds.push(customRegex);
+    } else {
+      //! fix
+    }
+
+    print(<h1 style={{ background: 'black', color: 'green' }}>Loading</h1>);
+    runCmdApi.mutate(
+      {
+        cmd: cmdArray.join(' '),
+        saltIds,
+      },
+      {
+        onSuccess: (data) => {
+          console.log('data', data);
+          print(
+            <CmdOutputWrapper>
+              {/* <Space
+                style={{ background: 'black', color: 'green' }}
+                direction="vertical"
+              > */}
+              {Object.keys(data.data).map((key) => (
+                <div>
+                  <h1 className="cmdOutput cmdOutputHead">{key}</h1>
+                  <div>
+                    {data.data[key].map((item) => (
+                      <h1 className="cmdOutput">{item}</h1>
+                    ))}
+                  </div>
+                </div>
+                // <Collapse
+                //   className="test"
+                //   style={{
+                //     border: '0px',
+                //     color: 'green',
+                //     background: 'black',
+                //   }}
+                //   collapsible="header"
+                //   defaultActiveKey={['1']}
+                // >
+                //   <Collapse.Panel
+                //     className="test"
+                //     style={{
+                //       background: 'black',
+                //       color: 'green',
+                //       border: '0px',
+                //     }}
+                //     header={key}
+                //     key="1"
+                //   >
+                //     {data.data[key].map((item) => (
+                //       <h1 style={{ background: 'black', color: 'green' }}>
+                //         {item}
+                //       </h1>
+                //     ))}
+                //   </Collapse.Panel>
+                // </Collapse>
+              ))}
+              {/* </Space> */}
+            </CmdOutputWrapper>
+          );
+        },
+      }
+    );
+
+    // console.log('output', output);
+
+    console.log('CMD RUN ', cmdArray.join(' '));
   };
   return (
     <CmdViewLayout>
@@ -124,7 +191,7 @@ const CmdView: React.FC = ({}) => {
           />
           <Button onClick={handleClick}>Run </Button>
         </div> */}
-        <TerminalContextProvider>
+        {/* <TerminalContextProvider>
           <div style={{ height: '800px' }}>
             <ReactTerminal
               defaultHandler={(e: string) => {
@@ -144,25 +211,29 @@ const CmdView: React.FC = ({}) => {
               theme="myCustomTheme"
             />
           </div>
-        </TerminalContextProvider>
-        {/* <Terminal
+        </TerminalContextProvider> */}
+        <Terminal
+          startState="maximised"
+          hideTopBar={true}
           color="green"
           backgroundColor="black"
           barColor="black"
-          style={{ fontWeight: 'bold', fontSize: '1em' }}
+          style={{ fontWeight: 'bold', fontSize: '1em', overflow: 'hidden' }}
           // commands={{
           //   'open-google': () => window.open('https://www.google.com/', '_blank'),
           //   showmsg: this.showMsg,
           //   popup: () => alert('Terminal in React')
           // }}
-          descriptions={{
-            'open-google': 'opens google.com',
-            showmsg: 'shows a message',
-            alert: 'alert',
-            popup: 'alert',
-          }}
-          msg="You can write anything here. Example - Hello! My name is Foo and I like Bar."
-        /> */}
+          // descriptions={{
+          //   'open-google': 'opens google.com',
+          //   showmsg: 'shows a message',
+          //   alert: 'alert',
+          //   popup: 'alert',
+          // }}
+
+          commandPassThrough={handleRun}
+          msg="Enter cmd below"
+        />
         {/* <TextArea rows={4} placeholder="maxLength is 6" maxLength={6} /> */}
       </Space>
     </CmdViewLayout>

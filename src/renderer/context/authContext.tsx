@@ -29,6 +29,12 @@ export const AuthProvider: React.FC<{
   const { setUser } = useAppContext();
 
   const setToken = (token: string) => {
+    if (token) {
+      api.defaults.headers.common['authorization'] = `Bearer ${token}`;
+    } else {
+      api.defaults.headers.common['authorization'] = '';
+    }
+
     _setToken(token);
     if (!token) {
       store.delete('token');

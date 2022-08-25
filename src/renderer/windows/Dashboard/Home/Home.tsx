@@ -3,8 +3,11 @@ import {
   ProfileOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { Avatar, Button } from 'antd';
+import { useEffect } from 'react';
 import { useAuth } from 'renderer/context/authContext';
+import { api } from 'utils/api';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
 
@@ -37,6 +40,27 @@ const AlertCard = ({ flag, email, softwareName }) => {
 
 const Home = () => {
   const auth = useAuth();
+
+  const { data, isLoading, error } = useQuery(
+    ['notifications'],
+    () =>
+      api
+        .get(
+          '/bolt/notifications/softwares/get?resolve=false&limit=1000&offset=0'
+        )
+        .then((res) => res.data),
+    {
+      enabled: false, //! FIX
+      refetchInterval: 1000,
+      onError: (err) => {
+        console.error('[get notifications]', err);
+      },
+    }
+  );
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <HomeLayout>

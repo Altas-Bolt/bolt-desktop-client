@@ -9,6 +9,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Dropdown, List, Menu, message, Space, Spin, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from 'utils/api';
 
 // Import Styles
@@ -105,6 +106,7 @@ const MinionsList: React.FC = ({}) => {
       },
     }
   );
+  const navigate = useNavigate();
   const rejectKeyApi = useMutation(
     ({ keys }: { keys: string[] | 'All' }) =>
       api.post('/api/salt/keys/reject', { keys }).then((res) => res.data),
@@ -191,7 +193,7 @@ const MinionsList: React.FC = ({}) => {
                 //       }),
               }}
               onClick={() => {
-                // navigate(`minion/${item.key}`);
+                navigate(`/dashboard/minion/${item.key}`);
               }}
               actions={
                 item.status.toLowerCase() !== 'requested'

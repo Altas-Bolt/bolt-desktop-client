@@ -1,16 +1,21 @@
 // Import Modules
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueries,
+  useQuery,
+} from '@tanstack/react-query';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Import Styles
 import 'antd/dist/antd.css';
 import './App.css';
+import { api } from 'utils/api';
 
 // Import Routes
 import { RegisterMinion } from './windows/Dashboard/Minion/RegisterMinion/RegisterMinion';
 import { AuthProvider } from './context/authContext';
 import CmdView from './windows/Dashboard/CmdView';
-import Dashboardlayout from './windows/Dashboard/layout/Dashboardlayout';
 import Minion from './windows/Dashboard/Minion/Minion';
 import MinionView from './windows/Dashboard/Minion/MinionView';
 import MinionsList from './windows/Dashboard/MinionsList/MinionsList';
@@ -20,10 +25,15 @@ import { AppProvider } from './context/appContext';
 import CreateEmp from './windows/Dashboard/CreateEmployee/CreateEmp';
 import ScanReports from './windows/Dashboard/ScanReports/ScanReports';
 import Home from './windows/Dashboard/Home/Home';
+import Dashboardlayout from './windows/Dashboard/layout/Dashboardlayout';
 
 export default function App() {
   const queryClient = new QueryClient();
+  // useEffect(() => {
+  //   setTimeout(() => {
 
+  //   }, 15000);
+  // }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>

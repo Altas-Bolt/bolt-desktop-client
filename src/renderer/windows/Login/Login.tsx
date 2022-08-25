@@ -1,7 +1,7 @@
 // Import Modules
 import { Button, Form, Input } from 'antd';
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'renderer/context/authContext';
 
 // Import Utils
@@ -12,11 +12,6 @@ import { useAuth } from 'renderer/context/authContext';
 import { LoginWrapper } from './Login.styles';
 
 const Login = () => {
-  const location = useLocation();
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
-
   const navigate = useNavigate();
   const auth = useAuth();
 

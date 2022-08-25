@@ -95,12 +95,14 @@ const ScanReports = () => {
       }),
     {
       onSuccess: async (res) => {
-        const config = {
-          scanId: res.data.data.id,
-          groupBy: view === DashboardViews.BY_EMPLOYEE ? 'employee' : null,
-        };
-        setSelectedScan(config.scanId);
-        await getScanInfo(config as any);
+        if (res.data.data?.id) {
+          const config = {
+            scanId: res.data.data.id,
+            groupBy: view === DashboardViews.BY_EMPLOYEE ? 'employee' : null,
+          };
+          setSelectedScan(config.scanId);
+          await getScanInfo(config as any);
+        }
       },
     }
   );
@@ -447,7 +449,7 @@ const ScanReports = () => {
       </div>
       {getScanInfoStatus === 'success' ? (
         <>
-          {scanData.data.data.length > 0 ? (
+          {scanData.data.data.data.length > 0 ? (
             <>
               <div className="pie-chart-container">
                 <PieChart

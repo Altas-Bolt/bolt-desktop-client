@@ -70,7 +70,8 @@ const remapAndFilterKeys = (
       break;
     case SelectedMinionListEnum.Requested:
       data = [...mappedSource['unacceptedKeys']];
-  }
+    break;
+    }
   return data;
 };
 

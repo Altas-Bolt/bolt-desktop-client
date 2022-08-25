@@ -9,12 +9,14 @@ import {
   UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import Navbar from 'renderer/components/Navbar/navbar';
 import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
+import { api } from 'utils/api';
 const { Header, Content, Sider } = Layout;
 
 // Import Styles
@@ -91,6 +93,11 @@ const Dashboardlayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const scan = useQuery(
+    ['scanss'],
+    () => api.post('/api/salt/linux-scan', {}),
+    { refetchInterval: 30000 }
+  );
   return (
     <ProtectedRoute>
       <DashboardlayoutWrapper>

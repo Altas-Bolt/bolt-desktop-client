@@ -1,5 +1,10 @@
 // Import Modules
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueries,
+  useQuery,
+} from '@tanstack/react-query';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Import Styles
@@ -19,10 +24,15 @@ import { AdminProfile } from './windows/Dashboard/AdminProfile/AdminProfile';
 import { AppProvider } from './context/appContext';
 import CreateEmp from './windows/Dashboard/CreateEmployee/CreateEmp';
 import ScanReports from './windows/Dashboard/ScanReports/ScanReports';
+import { api } from 'utils/api';
 
 export default function App() {
   const queryClient = new QueryClient();
+  // useEffect(() => {
+  //   setTimeout(() => {
 
+  //   }, 15000);
+  // }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>

@@ -40,6 +40,12 @@ export const ScanReportLayout = styled.div`
   .table {
     width: 100%;
     margin-top: 32px;
+
+    .dropdown {
+      /* align-self: flex-end; */
+      width: fit-content;
+      margin: 1rem 0 1rem auto;
+    }
   }
 
   .row {

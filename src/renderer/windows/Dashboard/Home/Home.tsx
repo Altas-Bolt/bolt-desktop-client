@@ -1,9 +1,5 @@
-import {
-  AlertOutlined,
-  ProfileOutlined,
-  UserDeleteOutlined,
-} from '@ant-design/icons';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { AlertOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
 import { Avatar, Button } from 'antd';
 import { useEffect } from 'react';
 import { useAuth } from 'renderer/context/authContext';

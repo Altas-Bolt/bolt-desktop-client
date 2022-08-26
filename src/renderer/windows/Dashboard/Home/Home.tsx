@@ -1,7 +1,6 @@
 import { blue } from '@ant-design/colors';
 import {
   AlertOutlined,
-  DeleteOutlined,
   LogoutOutlined,
   NotificationOutlined,
   UserDeleteOutlined,
@@ -13,13 +12,14 @@ import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
 import {
   BlacklistedTypeSoftwareNotificationResolutionsEnum,
-  ISoftwareNotifications,
+  FlagEnum,
 } from 'types/types';
 import { api } from 'utils/api';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
 import { UndecidedCard } from './UndecidedCard';
 
+//@ts-ignore
 const AlertCard = ({ flag, email, softwareName, id }) => {
   const resolveMutation = useMutation(
     ({
@@ -69,7 +69,7 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
               resolution:
                 BlacklistedTypeSoftwareNotificationResolutionsEnum.NOTIFIED,
               resolvedBy: user?.id as string,
-              terminalState: 'nkjdnc',
+              terminalState: FlagEnum.BLACKLISTED,
             });
           }}
           style={{ color: blue.primary!, cursor: 'pointer' }}
@@ -85,7 +85,7 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
               resolution:
                 BlacklistedTypeSoftwareNotificationResolutionsEnum.LOGOFFED,
               resolvedBy: user?.id as string,
-              terminalState: 'nkjdnc',
+              terminalState: FlagEnum.BLACKLISTED,
             });
           }}
           style={{ color: blue.primary!, cursor: 'pointer' }}
@@ -104,7 +104,10 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
       <div className="meta">
         <div className="data">
           <p className="key">Employee Email</p>
-          <p>{email}</p>
+          <p>
+            {email}
+            {id}
+          </p>
         </div>
         <div className="data">
           <p className="key">Software Name</p>
@@ -157,14 +160,25 @@ const Home = () => {
           <div className="cards-grid">
             {data &&
               data.data.map((item: any) => {
-                return (
-                  <AlertCard
-                    id={item.id}
-                    flag={item.software_flag}
-                    email={item.user_email}
-                    softwareName={item.software_name}
-                  />
-                );
+                if (item.software_flag === FlagEnum.BLACKLISTED) {
+                  return (
+                    <AlertCard
+                      id={item.id}
+                      flag={item.software_flag}
+                      email={item.user_email}
+                      softwareName={item.software_name}
+                    />
+                  );
+                } else if (item.software_flag === FlagEnum.UNDECIDED) {
+                  return (
+                    <UndecidedCard
+                      id={item.id}
+                      flag={item.software_flag}
+                      email={item.user_email}
+                      softwareName={item.software_name}
+                    />
+                  );
+                }
               })}
             {/* <AlertCard
               flag="blacklisted"

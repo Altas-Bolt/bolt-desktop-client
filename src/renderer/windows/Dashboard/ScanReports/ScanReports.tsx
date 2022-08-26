@@ -287,7 +287,14 @@ const ScanReports = () => {
       ...getColumnSearchProps('minion_ip'),
     },
   ];
-
+  const scan = useQuery(
+    ['scanss'],
+    () =>
+      api.post('/api/salt/scan', {
+        os: 'linux',
+      }),
+    { refetchInterval: 0 }
+  );
   const byEmployeesViewColumn: ColumnsType<any> = [
     {
       title: 'Employee Email',
@@ -363,6 +370,8 @@ const ScanReports = () => {
             type="primary"
             className="refresh-button"
             onClick={() => {
+              scan.refetch();
+
               getScanInfo({
                 scanId: selectedScan,
                 groupBy:

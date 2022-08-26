@@ -69,11 +69,6 @@ const Dashboardlayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // const scan = useQuery(
-  //   ['scanss'],
-  //   () => api.post('/api/salt/linux-scan', {}),
-  //   { refetchInterval: 30000 }
-  // );
   return (
     <ProtectedRoute>
       <DashboardlayoutWrapper>
@@ -128,7 +123,7 @@ const Dashboardlayout = () => {
                           color: '#1980ff',
                           fontSize: '1rem',
                           fontWeight: 'bold',
-                          textTransform: 'capitalize'
+                          textTransform: 'capitalize',
                         }}
                         onClick={(e) => {
                           e.preventDefault();

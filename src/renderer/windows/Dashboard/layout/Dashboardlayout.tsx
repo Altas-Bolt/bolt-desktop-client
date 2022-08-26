@@ -5,14 +5,16 @@ import {
   KeyOutlined,
   LaptopOutlined,
   PieChartOutlined,
+  PlayCircleOutlined,
   ProfileOutlined,
   ThunderboltOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import { Breadcrumb, Button, Layout, Menu } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import Navbar from 'renderer/components/Navbar/navbar';
 import { ProtectedRoute } from 'renderer/components/ProtectedRoute';
+import { useAuth } from 'renderer/context/authContext';
 
 // Import Styles
 import { DashboardlayoutWrapper } from './Dashboardlayout.styles';
@@ -63,11 +65,17 @@ const items2 = [
     label: 'Link device',
     icon: <LaptopOutlined />,
   },
+  {
+    key: '/dashboard/ram-usage',
+    label: 'Check RAM Usage',
+    icon: <PlayCircleOutlined />,
+  },
 ];
 
 const Dashboardlayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const auth = useAuth();
 
   return (
     <ProtectedRoute>
@@ -95,46 +103,63 @@ const Dashboardlayout = () => {
               />
             </Sider>
             <Layout className="bg" style={{ padding: '0 24px 24px' }}>
-              <Breadcrumb style={{ margin: '16px 0' }}>
-                {location.pathname
-                  .split('/')
-                  .splice(1)
-                  .reduce<
-                    {
-                      pathname: string;
-                      label: string;
-                    }[]
-                  >((prev, curr) => {
-                    const n = [...prev];
-                    n.push({
-                      pathname:
-                        prev.length > 0
-                          ? prev[prev.length - 1].pathname + `/${curr}`
-                          : `/${curr}`,
-                      label: curr,
-                    });
-                    return n;
-                  }, [])
-                  .map(({ pathname, label }) => (
-                    <Breadcrumb.Item key={label}>
-                      <a
-                        href={pathname}
-                        style={{
-                          color: '#1980ff',
-                          fontSize: '1rem',
-                          fontWeight: 'bold',
-                          textTransform: 'capitalize',
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate(pathname);
-                        }}
-                      >
-                        {label}
-                      </a>
-                    </Breadcrumb.Item>
-                  ))}
-              </Breadcrumb>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Breadcrumb style={{ margin: '16px 0' }}>
+                  {location.pathname
+                    .split('/')
+                    .splice(1)
+                    .reduce<
+                      {
+                        pathname: string;
+                        label: string;
+                      }[]
+                    >((prev, curr) => {
+                      const n = [...prev];
+                      n.push({
+                        pathname:
+                          prev.length > 0
+                            ? prev[prev.length - 1].pathname + `/${curr}`
+                            : `/${curr}`,
+                        label: curr,
+                      });
+                      return n;
+                    }, [])
+                    .map(({ pathname, label }) => (
+                      <Breadcrumb.Item key={label}>
+                        <a
+                          href={pathname}
+                          style={{
+                            color: '#1980ff',
+                            fontSize: '1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(pathname);
+                          }}
+                        >
+                          {label}
+                        </a>
+                      </Breadcrumb.Item>
+                    ))}
+                </Breadcrumb>
+                <Button
+                  type="primary"
+                  style={{ width: 'fit-content' }}
+                  onClick={() => auth.signout()}
+                >
+                  Logout
+                </Button>
+              </div>
+
               <Content
                 className="site-layout-background"
                 style={{

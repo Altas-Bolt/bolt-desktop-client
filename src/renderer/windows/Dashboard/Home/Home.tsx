@@ -6,7 +6,7 @@ import {
   UserDeleteOutlined,
 } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Avatar, Button, Form, Input, Popover } from 'antd';
+import { Avatar, Button, Form, Input, Popover, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
@@ -170,13 +170,12 @@ const Home = () => {
         <div className="recents-wrapper">
           <h2>Recent Alerts</h2>
           <div className="cards-grid">
-            {data &&
+            {!isLoading && data?.data?.length > 0 ? (
               data.data
                 .filter(
                   (item) =>
-                    item.software_name
-                      .toLowerCase()
-                      .indexOf(filterVal.toLowerCase()) >= 0
+                    item.software_name ??
+                    ''.toLowerCase().indexOf(filterVal.toLowerCase()) >= 0
                 )
                 .map((item: any) => {
                   if (item.software_flag === FlagEnum.BLACKLISTED) {
@@ -188,7 +187,8 @@ const Home = () => {
                         softwareName={item.software_name}
                       />
                     );
-                  } else if (item.software_flag === FlagEnum.UNDECIDED) {
+                  }
+                  if (item.software_flag === FlagEnum.UNDECIDED) {
                     return (
                       <UndecidedCard
                         id={item.id}
@@ -198,7 +198,10 @@ const Home = () => {
                       />
                     );
                   }
-                })}
+                })
+            ) : (
+              <Spin size="large" />
+            )}
             {/* <AlertCard
               flag="blacklisted"
               email={'rishabh@gmail.com'}

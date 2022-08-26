@@ -10,7 +10,6 @@ import './App.css';
 import { AppProvider } from './context/appContext';
 import { AuthProvider } from './context/authContext';
 import AddEmp from './windows/Dashboard/addEmp/addEmp';
-import { AdminProfile } from './windows/Dashboard/AdminProfile/AdminProfile';
 import CmdView from './windows/Dashboard/CmdView';
 import CreateEmp from './windows/Dashboard/CreateEmployee/CreateEmp';
 import Home from './windows/Dashboard/Home/Home';

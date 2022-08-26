@@ -18,10 +18,13 @@ export const RAMUsageWrapper = styled.div`
 
   .terminal {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    /* flex-direction: row;
+    flex-wrap: wrap; */
     color: green;
     background-color: black;
     padding: 1rem;
+    white-space: pre-wrap;
   }
 `;

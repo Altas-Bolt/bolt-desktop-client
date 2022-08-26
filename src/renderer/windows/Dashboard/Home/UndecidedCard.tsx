@@ -15,7 +15,7 @@ import {
 import { api } from 'utils/api';
 
 //@ts-ignore
-export const UndecidedCard = ({ flag, email, softwareName, id }) => {
+export const UndecidedCard = ({ flag, email, softwareName, id, ip }) => {
   const resolveMutation = useMutation(
     ({
       id,
@@ -145,7 +145,8 @@ export const UndecidedCard = ({ flag, email, softwareName, id }) => {
           <p className="key">Employee Email</p>
           <p>
             {email}
-            {id}
+            <br />
+            {ip}
           </p>
         </div>
         <div className="data">

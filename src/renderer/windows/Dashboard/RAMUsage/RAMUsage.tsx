@@ -6,23 +6,30 @@ import { api } from 'utils/api';
 import { RAMUsageWrapper } from './RAMUsage.styles';
 
 const RAMUsage = () => {
-  const [minionId, setMinionId] = useState(null);
+  const [minionId, setMinionId] = useState('');
   const { data } = useQuery(['minions'], () => {
     return api.get('/bolt/minions/all');
   });
 
   const { data: cmdData, status: cmdStatus } = useQuery(
     ['cpu-usage', minionId],
-    () => api.post('/api/salt/run-cmd', { saltIds: [minionId], cmd: 'ps aux' }),
-    { enabled: !!minionId, staleTime: 2 * 1000 }
+    () =>
+      api.post('/api/salt/run-cmd', {
+        saltIds: [minionId],
+        cmd: minionId.toLowerCase().startsWith('linux') ? 'ps aux' : 'tasklist',
+      }),
+    { enabled: !!minionId, refetchInterval: 100 }
   );
 
   const renderTerminalData = () => {
     if (!minionId) return 'Enter a minion id to check RAM Usage';
 
     if (cmdStatus === 'loading') return 'Fetching RAM Usage...';
-
-    return cmdData?.data.data ? Object.values(cmdData?.data.data) : '';
+    return cmdData?.data.data
+      ? cmdData?.data.data[[minionId]].map((i) => (
+          <h1 style={{ color: 'green' }}>{i}</h1>
+        ))
+      : '';
   };
 
   return (

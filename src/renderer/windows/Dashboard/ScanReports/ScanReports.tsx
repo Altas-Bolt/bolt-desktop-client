@@ -323,14 +323,14 @@ const ScanReports = () => {
       ...getColumnSearchProps('user_email'),
     },
   ];
-  // const scan = useQuery(
-  //   ['scanss'],
-  //   () =>
-  //     api.post('/api/salt/scan', {
-  //       os: 'linux',
-  //     }),
-  //   { refetchInterval: 0 }
-  // );
+  const scan = useQuery(
+    ['scanss'],
+    () =>
+      api.post('/api/salt/scan', {
+        os: 'linux',
+      }),
+    { refetchInterval: 0 }
+  );
   const byEmployeesViewColumn: ColumnsType<any> = [
     {
       title: 'Employee Email',

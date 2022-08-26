@@ -20,7 +20,7 @@ import { HomeLayout } from './Home.styles';
 import { UndecidedCard } from './UndecidedCard';
 
 //@ts-ignore
-const AlertCard = ({ flag, email, softwareName, id }) => {
+const AlertCard = ({ flag, email, softwareName, id, ip }) => {
   const resolveMutation = useMutation(
     ({
       id,
@@ -106,7 +106,8 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
           <p className="key">Employee Email</p>
           <p>
             {email}
-            {id}
+            <br />
+            {ip}
           </p>
         </div>
         <div className="data">
@@ -147,7 +148,7 @@ const Home = () => {
         .then((res) => res.data),
     {
       // enabled: false, //! FIX
-      refetchInterval: 1000,
+      refetchInterval: 10 * 1000,
       onError: (err) => {
         console.error('[get notifications]', err);
       },
@@ -160,16 +161,17 @@ const Home = () => {
   const [filterVal, setFilterVal] = useState('');
   return (
     <HomeLayout>
+      {/* <Form>
+        <Form.Item>
+          <Input.Search onSearch={(e) => setFilterVal(e)} />
+        </Form.Item>
+      </Form> */}
       <h1 className="heading">Home</h1>
 
       <div className="header">
         <div className="recents-wrapper">
           <h2>Recent Alerts</h2>
-          <Form>
-            <Form.Item>
-              <Input.Search onSearch={(e) => setFilterVal(e)} />
-            </Form.Item>
-          </Form>
+
           <div className="cards-grid">
             {!isLoading && data?.data?.length > 0 ? (
               data.data
@@ -182,6 +184,7 @@ const Home = () => {
                   if (item.software_flag === FlagEnum.BLACKLISTED) {
                     return (
                       <AlertCard
+                        ip={item.minion_ip}
                         id={item.id}
                         flag={item.software_flag}
                         email={item.user_email}
@@ -192,6 +195,7 @@ const Home = () => {
                   if (item.software_flag === FlagEnum.UNDECIDED) {
                     return (
                       <UndecidedCard
+                        ip={item.minion_ip}
                         id={item.id}
                         flag={item.software_flag}
                         email={item.user_email}
@@ -203,41 +207,6 @@ const Home = () => {
             ) : (
               <Spin size="large" />
             )}
-            {/* <AlertCard
-              flag="blacklisted"
-              email={'rishabh@gmail.com'}
-              softwareName={'DOS'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            />
-            <AlertCard
-              flag="blacklisted"
-              email={'sjain@gmail.com'}
-              softwareName={'Instagram'}
-            /> */}
           </div>
         </div>
         <div className="card-wrapper">

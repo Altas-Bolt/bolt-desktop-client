@@ -1,13 +1,49 @@
-import { AlertOutlined, UserDeleteOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Avatar, Button } from 'antd';
-import { useEffect } from 'react';
+import { blue } from '@ant-design/colors';
+import {
+  AlertOutlined,
+  DeleteOutlined,
+  LogoutOutlined,
+  NotificationOutlined,
+  ProfileOutlined,
+  UserDeleteOutlined,
+} from '@ant-design/icons';
+import { Avatar, Button, Popover } from 'antd';
 import { useAuth } from 'renderer/context/authContext';
 import { api } from 'utils/api';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
 
 const AlertCard = ({ flag, email, softwareName }) => {
+  const content = (
+    <div>
+      <p>
+        <div
+          onClick={() => {}}
+          style={{ color: blue.primary!, cursor: 'pointer' }}
+        >
+          <DeleteOutlined /> Uninstall software
+        </div>
+      </p>
+       
+      <p>
+        <div
+          onClick={() => {}}
+          style={{ color: blue.primary!, cursor: 'pointer' }}
+        >
+          <NotificationOutlined /> Uninstall and notify
+        </div>
+      </p>
+      <p>
+        <div
+          onClick={() => {}}
+          style={{ color: blue.primary!, cursor: 'pointer' }}
+        >
+          <LogoutOutlined /> Logout employee
+        </div>
+      </p>
+    </div>
+  );
+
   return (
     <div className="alert-card">
       <div className="icon">
@@ -28,7 +64,9 @@ const AlertCard = ({ flag, email, softwareName }) => {
         </div>
       </div>
       <div className="action">
-        <Button icon={<UserDeleteOutlined />}>Logout Employee</Button>
+        <Popover placement="bottom" content={content} title="Actions">
+          <Button icon={<UserDeleteOutlined />}>Actions</Button>
+        </Popover>
       </div>
     </div>
   );

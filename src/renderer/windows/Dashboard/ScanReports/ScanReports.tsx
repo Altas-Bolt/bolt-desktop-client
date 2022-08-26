@@ -284,7 +284,6 @@ const ScanReports = () => {
       title: 'IP Address',
       dataIndex: 'minion_ip',
       key: 'ip',
-      render: () => <p>192.168.198.51</p>,
       ...getColumnSearchProps('minion_ip'),
     },
   ];
@@ -348,7 +347,6 @@ const ScanReports = () => {
       title: 'IP Address',
       dataIndex: 'minion_ip',
       key: 'ip',
-      render: () => <p>192.168.198.51</p>,
       ...getColumnSearchProps('minion_ip'),
     },
   ];

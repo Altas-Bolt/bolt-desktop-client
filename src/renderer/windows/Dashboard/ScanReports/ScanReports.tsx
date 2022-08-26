@@ -83,7 +83,7 @@ const ScanReports = () => {
     data: scanData,
   } = useMutation((body) =>
     api.post('/bolt/scans/info', body, {
-      baseURL: 'http://localhost:3000',
+      // baseURL: 'http://localhost:3000',
     })
   );
 
@@ -91,7 +91,7 @@ const ScanReports = () => {
     ['getLatestScanMeta', view],
     () =>
       api.get('/bolt/scans/latest', {
-        baseURL: 'http://localhost:3000',
+        // baseURL: 'http://localhost:3000',
       }),
     {
       onSuccess: async (res) => {
@@ -111,7 +111,7 @@ const ScanReports = () => {
     ['getScanMeta'],
     () =>
       api.get('/bolt/scans/latest?limit=6', {
-        baseURL: 'http://localhost:3000',
+        // baseURL: 'http://localhost:3000',
       })
   );
 

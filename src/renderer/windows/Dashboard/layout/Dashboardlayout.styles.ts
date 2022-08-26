@@ -34,5 +34,14 @@ export const DashboardlayoutWrapper = styled.div`
 
   .site-layout-background {
     background: #fff;
+    border-radius: 10px;
+  }
+
+  .bg {
+    background: white;
+  }
+
+  .bread-text {
+    color: #fff;
   }
 `;

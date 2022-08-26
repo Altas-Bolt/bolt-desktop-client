@@ -54,19 +54,14 @@ const items2 = [
     ],
   },
   {
-    key: '/dashboard/profile',
-    label: 'profile',
-    icon: <ProfileOutlined />,
-  },
-  {
     key: '/dashboard/scans',
     label: 'Scan Reports',
     icon: <PieChartOutlined />,
   },
   {
     key: '/dashboard/add',
-    label: 'Add device',
-    icon: <PieChartOutlined />,
+    label: 'Link device',
+    icon: <LaptopOutlined />,
   },
 ];
 
@@ -104,7 +99,7 @@ const Dashboardlayout = () => {
                 }}
               />
             </Sider>
-            <Layout style={{ padding: '0 24px 24px' }}>
+            <Layout className="bg" style={{ padding: '0 24px 24px' }}>
               <Breadcrumb style={{ margin: '16px 0' }}>
                 {location.pathname
                   .split('/')
@@ -129,6 +124,12 @@ const Dashboardlayout = () => {
                     <Breadcrumb.Item key={label}>
                       <a
                         href={pathname}
+                        style={{
+                          color: '#1980ff',
+                          fontSize: '1rem',
+                          fontWeight: 'bold',
+                          textTransform: 'capitalize'
+                        }}
                         onClick={(e) => {
                           e.preventDefault();
                           navigate(pathname);

@@ -7,10 +7,12 @@ import {
   ProfileOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { Avatar, Button, Popover } from 'antd';
 import { useAuth } from 'renderer/context/authContext';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
+import { UndecidedCard } from './UndecidedCard';
 
 const AlertCard = ({ flag, email, softwareName }) => {
   const content = (
@@ -81,6 +83,11 @@ const Home = () => {
         <div className="recents-wrapper">
           <h2>Recent Alerts</h2>
           <div className="cards-grid">
+            <UndecidedCard
+              flag="undecided"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
             <AlertCard
               flag="blacklisted"
               email={'aniket.biswas75@gmail.com'}

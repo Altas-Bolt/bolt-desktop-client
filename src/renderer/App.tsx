@@ -39,7 +39,6 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboardlayout />}>
                 <Route index element={<Home />} />
                 <Route path="keys" element={<MinionsList />} />
-                <Route path="profile" element={<AdminProfile />} />
                 <Route path="cmd" element={<CmdView />} />
                 <Route path="scans" element={<ScanReports />} />
                 <Route path="minion">

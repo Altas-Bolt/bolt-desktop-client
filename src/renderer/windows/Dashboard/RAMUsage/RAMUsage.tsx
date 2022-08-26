@@ -60,7 +60,9 @@ const RAMUsage = () => {
               return null;
             }
 
-            return <Select.Option key={label.id}>{label.saltId}</Select.Option>;
+            return (
+              <Select.Option key={label.saltId}>{label.saltId}</Select.Option>
+            );
           })}
         </Select>
       </div>

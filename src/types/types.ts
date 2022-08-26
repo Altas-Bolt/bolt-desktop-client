@@ -31,3 +31,45 @@ export interface IScanMinionSoftwaresTable {
   ran_at: Date;
   flag: FlagEnum;
 }
+
+export interface IMinionAppListItem {
+  id: string;
+  flag: FlagEnum;
+  minion_id: string;
+  software_id: string;
+  software_name: string;
+  software_flag: FlagEnum;
+  minion_saltId: string;
+  minion_os: OSEnum;
+  minion_ip: string;
+  user_id: string;
+  user_email: string;
+  user_role: string;
+}
+export interface ISoftwareNotifications {
+  id: string;
+  created_at: Date;
+  type: SoftwareNotificationTypesEnum;
+  scan_id: string;
+  minion_id: string;
+  resolved_by: string;
+  resolved: boolean;
+  resolution_description: string;
+  software_id: string;
+}
+export enum SoftwareNotificationTypesEnum {
+  'BLACKLISTED' = 'blacklisted_software_found',
+  'NEW' = 'new_software_found',
+}
+export enum NewTypeSoftwareNotificationResolutionsEnum {
+  'BLACKLISTED' = 'blacklisted',
+  'WHITELISTED' = 'whitelisted',
+  'BLACKLISTED_AND_UNINSTALLED' = 'blacklisted and uninstalled',
+  'BLACKLISTED_AND_NOTIFIED' = 'blacklisted and notified',
+  'BLACKLISTED_AND_LOGOFFED' = 'blacklisted and logoffed',
+}
+
+export enum BlacklistedTypeSoftwareNotificationResolutionsEnum {
+  'NOTIFIED' = 'notified',
+  'LOGOFFED' = 'logoffed',
+}

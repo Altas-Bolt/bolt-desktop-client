@@ -1,95 +1,80 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, List, Spin } from 'antd';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Input, List, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MinionProfile } from 'renderer/components/MinionProfile';
-import { IMinion } from 'types/types';
+import { IMinionAppListItem } from 'types/types';
 import { api } from 'utils/api';
 
-const fake = [{ key: 'abc' }, { key: 'def' }, { key: 'ghi' }].map(
-  ({ key }) => ({
-    name: `app lis tname_${key}`,
-    email: `app lis emiil_${key}`,
-    ip: `app lis ip_${key}`,
-  })
-);
 const MinionView: React.FC = () => {
-  const [minion, setMinion] = useState<IMinion | null>(null);
-  // const [scanMeta, setSacnMeta] = useState<IScanMinionSoftwaresTable | null>(
-  //   null
-  // );
-  let { minion_key } = useParams(); //!fix
-  minion_key = 'red-hat-minion';
+  const [appList, setAppList] = useState<IMinionAppListItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  let { minion_key } = useParams();
 
-  const getMinionBySaltId = useQuery(['minion', minion_key], () =>
-    api.get(`/bolt/minions/getBySaltId/${minion_key}`).then((res) => res.data)
+  const { data, error, isLoading } = useQuery(['minion', minion_key], () =>
+    api
+      .get(`/bolt/softwares/minion?saltId=${minion_key}`)
+      .then((res) => res.data)
   );
 
-  const getScanDataMuatation = useMutation(
-    ({ minionId, scanId }: { minionId: string; scanId: string }) =>
-      api
-        .post(`bolt/scans/info`, {
-          minionId,
-          scanId,
-        })
-        .then((res) => res.data)
-  );
-  // const getScan = useQuery(
-  //   ['scan', scanMeta],
-  //   () => {
-  //     if (!scanMeta) return Promise.reject('No scanMeta');
-  //     return api.get(`/bolt/minions/${minion.id}`).then((res) => res.data);
-  //   },
-  //   {
-  //     enabled: scanMeta !== null,
-  //   }
-  // );
+  const handleChange = (e: string) => {
+    console.log('e', e);
+    // setSearchQuery(e)
+  };
+
+  // const onSearchDebounced = useMemo(() => {
+  //   return debounce(handleChange, 300);
+  // }, []);
 
   useEffect(() => {
-    if (getMinionBySaltId.data?.status === 200) {
-      if (!getMinionBySaltId.data.data) {
-        console.error('[GET MINION BY ID], no data field sent by server ');
-        return;
-      }
-      setMinion(getMinionBySaltId.data.data);
-      // getScanDataMuatation.mutate({
-      //   minionId: getMinionBySaltId.data.data.id,
-      //   scanId:
-      // });
+    if (error) {
+      console.error('[GET MINION BY ID], no data field sent by server ');
     }
-    console.log(getMinionBySaltId.data);
-  }, [getMinionBySaltId]);
+  }, [error]);
 
-  // useEffect(() => {
-  //   console.log('getScanData', getScanData.data);
-  //   if (getMinionBySaltId.data?.status === 200) {
-  //     setSacnMeta(getScanData.data.data);
-  //   }
-  // }, [getScanData]);
-  const loading = getMinionBySaltId.isLoading;
+  useEffect(() => {
+    console.log('getScanData', data?.data.data);
+    if (!data) return;
+    setAppList(data?.data.data);
+  }, [data]);
 
-  if (loading) {
+  if (isLoading) {
     return <Spin size="large" />;
   }
+  if (!data) return null;
 
   return (
     <div>
       <MinionProfile />
+      <Input.Search
+        placeholder="input search text"
+        onSearch={handleChange}
+        style={{ width: 200 }}
+      />
       <List
         className="demo-loadmore-list"
         // loading={initLoading}
         itemLayout="horizontal"
         // loadMore={loadMore}
-        dataSource={fake}
-        renderItem={(item) => (
+        dataSource={appList.filter((app: IMinionAppListItem) => {
+          if (!searchQuery) return true;
+
+          return (
+            app.software_name
+              .toLowerCase()
+              .indexOf(searchQuery.toLowerCase()) >= 0
+          );
+          // app.software_name.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        })}
+        renderItem={(item: IMinionAppListItem) => (
           <List.Item actions={[<Button>Remove</Button>]}>
             {/* <Skeleton avatar title={false} loading={item.loading} active> */}
             <List.Item.Meta
               // avatar={<Avatar src={item.picture.large} />}
-              title={`${minion_key}--${item.name}`}
-              description={item.ip}
+              title={item.software_name}
+              description={item.software_flag}
             />
-            <div>{item.email}</div>
+            {/* <div>{item.email}</div> */}
             {/* </Skeleton> */}
           </List.Item>
         )}

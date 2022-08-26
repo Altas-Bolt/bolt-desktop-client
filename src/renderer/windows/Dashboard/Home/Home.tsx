@@ -6,7 +6,7 @@ import {
   UserDeleteOutlined,
 } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Avatar, Button, Form, Input, Popover } from 'antd';
+import { Avatar, Button, Form, Input, Popover, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
@@ -120,7 +120,14 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
       </div>
       <div className="action">
         <Popover placement="bottom" content={content} title="Actions">
-          <Button icon={<UserDeleteOutlined />}>Actions</Button>
+          <Button
+            icon={<UserDeleteOutlined />}
+            loading={resolveMutation.status === 'loading'}
+          >
+            {resolveMutation.status === 'loading'
+              ? 'Please Wait...'
+              : 'Actions'}
+          </Button>
         </Popover>
       </div>
     </div>
@@ -164,13 +171,12 @@ const Home = () => {
             </Form.Item>
           </Form>
           <div className="cards-grid">
-            {data &&
+            {!isLoading && data?.data?.length > 0 ? (
               data.data
                 .filter(
                   (item) =>
-                    item.software_name
-                      .toLowerCase()
-                      .indexOf(filterVal.toLowerCase()) >= 0
+                    item.software_name ??
+                    ''.toLowerCase().indexOf(filterVal.toLowerCase()) >= 0
                 )
                 .map((item: any) => {
                   if (item.software_flag === FlagEnum.BLACKLISTED) {
@@ -182,7 +188,8 @@ const Home = () => {
                         softwareName={item.software_name}
                       />
                     );
-                  } else if (item.software_flag === FlagEnum.UNDECIDED) {
+                  }
+                  if (item.software_flag === FlagEnum.UNDECIDED) {
                     return (
                       <UndecidedCard
                         id={item.id}
@@ -192,7 +199,45 @@ const Home = () => {
                       />
                     );
                   }
-                })}
+                })
+            ) : (
+              <Spin size="large" />
+            )}
+            {/* <AlertCard
+              flag="blacklisted"
+              email={'rishabh@gmail.com'}
+              softwareName={'DOS'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            />
+            <AlertCard
+              flag="blacklisted"
+              email={'sjain@gmail.com'}
+              softwareName={'Instagram'}
+            /> */}
           </div>
         </div>
         <div className="card-wrapper">

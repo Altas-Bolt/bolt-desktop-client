@@ -20,6 +20,7 @@ import { RegisterMinion } from './windows/Dashboard/Minion/RegisterMinion/Regist
 import MinionsList from './windows/Dashboard/MinionsList/MinionsList';
 import ScanReports from './windows/Dashboard/ScanReports/ScanReports';
 import Login from './windows/Login/Login';
+import RAMUsage from './windows/Dashboard/RAMUsage/RAMUsage';
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="keys" element={<MinionsList />} />
                 <Route path="cmd" element={<CmdView />} />
                 <Route path="scans" element={<ScanReports />} />
+                <Route path="ram-usage" element={<RAMUsage />} />
                 <Route path="minion">
                   <Route index element={<Minion />} />
                   <Route path=":minion_key" element={<MinionView />} />

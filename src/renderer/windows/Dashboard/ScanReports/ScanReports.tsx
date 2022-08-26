@@ -39,6 +39,7 @@ const { TabPane } = Tabs;
 enum DashboardViews {
   DEFAULT = 'Default',
   BY_EMPLOYEE = 'By Employee',
+  BY_APPLICATION = 'By Application',
 }
 
 enum SoftwareFlag {
@@ -87,6 +88,18 @@ const ScanReports = () => {
     })
   );
 
+  const getGroupBy = (view: DashboardViews) => {
+    switch (view) {
+      case DashboardViews.BY_APPLICATION:
+        return 'software_name';
+      case DashboardViews.BY_EMPLOYEE:
+        return 'employee';
+      case DashboardViews.DEFAULT:
+      default:
+        return null;
+    }
+  };
+
   const { status: latestScanStatus } = useQuery(
     ['getLatestScanMeta', view],
     () =>
@@ -98,7 +111,7 @@ const ScanReports = () => {
         if (res.data.data?.id) {
           const config = {
             scanId: res.data.data.id,
-            groupBy: view === DashboardViews.BY_EMPLOYEE ? 'employee' : null,
+            groupBy: getGroupBy(view),
           };
           setSelectedScan(config.scanId);
           await getScanInfo(config as any);
@@ -134,6 +147,29 @@ const ScanReports = () => {
 
   const handleTabChange = (key: string) => {
     setCurrentScanFilterTab(key as 'chronological' | 'date');
+  };
+
+  const getExpandableView = (v: DashboardViews) => {
+    switch (v) {
+      case DashboardViews.BY_EMPLOYEE:
+        return {
+          expandedRowRender: (record) => (
+            <>
+              <h3>Softwares</h3>
+              {record.softwares.map((item: any) => (
+                <Tag color={colorCodeMap[item.flag]} key={item.id}>
+                  {item.name}
+                </Tag>
+              ))}
+            </>
+          ),
+          rowExpandable: (record) => record.softwares?.length > 0,
+        };
+      case DashboardViews.BY_APPLICATION:
+      case DashboardViews.DEFAULT:
+      default:
+        return {};
+    }
   };
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
@@ -233,6 +269,12 @@ const ScanReports = () => {
 
   const columns: ColumnsType<any> = [
     {
+      title: 'IP Address',
+      dataIndex: 'minion_ip',
+      key: 'ip',
+      ...getColumnSearchProps('minion_ip'),
+    },
+    {
       title: 'Minion ID',
       dataIndex: 'minion_saltId',
       key: 'minion_saltId',
@@ -250,7 +292,7 @@ const ScanReports = () => {
       title: 'Software Name',
       dataIndex: 'software_name',
       key: 'name',
-      ...getColumnSearchProps('name'),
+      ...getColumnSearchProps('software_name'),
     },
     {
       title: 'Flag',
@@ -278,13 +320,7 @@ const ScanReports = () => {
       title: 'Employee Email',
       dataIndex: 'user_email',
       key: 'email',
-      ...getColumnSearchProps('employeeEmail'),
-    },
-    {
-      title: 'IP Address',
-      dataIndex: 'minion_ip',
-      key: 'ip',
-      ...getColumnSearchProps('minion_ip'),
+      ...getColumnSearchProps('user_email'),
     },
   ];
   // const scan = useQuery(
@@ -358,6 +394,44 @@ const ScanReports = () => {
     },
   ];
 
+  const byApplicationsColumn: ColumnsType<any> = [
+    {
+      title: 'Software Name',
+      dataIndex: 'software_name',
+      key: 'name',
+    },
+    {
+      title: 'Flag',
+      dataIndex: 'software_flag',
+      key: 'flag',
+      filterSearch: true,
+      onFilter: (value, record) => record.flag === value,
+      filters: Object.keys(SoftwareFlag).map((i) => ({
+        text: <span>{i}</span>,
+        value: i,
+      })),
+    },
+    {
+      title: 'Minions',
+      dataIndex: 'minions',
+      key: 'minions',
+      render: (value) =>
+        value.map((item) => <Tag color="blue">{item.minion_ip}</Tag>),
+    },
+  ];
+
+  const getColumns = (v: DashboardViews) => {
+    switch (v) {
+      case DashboardViews.BY_APPLICATION:
+        return byApplicationsColumn;
+      case DashboardViews.BY_EMPLOYEE:
+        return byEmployeesViewColumn;
+      case DashboardViews.DEFAULT:
+      default:
+        return columns;
+    }
+  };
+
   if (latestScanStatus === 'loading' || scanMetaStatus === 'loading')
     return <Spin size="large" />;
 
@@ -374,8 +448,7 @@ const ScanReports = () => {
 
               getScanInfo({
                 scanId: selectedScan,
-                groupBy:
-                  view === DashboardViews.BY_EMPLOYEE ? 'employee' : null,
+                groupBy: getGroupBy(view),
               } as any);
             }}
           >
@@ -401,8 +474,7 @@ const ScanReports = () => {
                     setSelectedScan(e.target.value);
                     getScanInfo({
                       scanId: e.target.value,
-                      groupBy:
-                        view === DashboardViews.BY_EMPLOYEE ? 'employee' : null,
+                      groupBy: getGroupBy(view),
                     } as any);
                   }}
                   style={{
@@ -534,26 +606,8 @@ const ScanReports = () => {
                   ? scanData?.data.data.data
                   : scanData?.data.data.data
               }
-              columns={
-                view === DashboardViews.DEFAULT
-                  ? columns
-                  : byEmployeesViewColumn
-              }
-              expandable={
-                DashboardViews.BY_EMPLOYEE && {
-                  expandedRowRender: (record) => (
-                    <>
-                      <h3>Softwares</h3>
-                      {record.softwares.map((item: any) => (
-                        <Tag color={colorCodeMap[item.flag]} key={item.id}>
-                          {item.name}
-                        </Tag>
-                      ))}
-                    </>
-                  ),
-                  rowExpandable: (record) => record.softwares?.length > 0,
-                }
-              }
+              columns={getColumns(view)}
+              expandable={getExpandableView(view)}
               sticky
             />
           </div>

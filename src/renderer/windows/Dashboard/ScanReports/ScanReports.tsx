@@ -39,6 +39,7 @@ const { TabPane } = Tabs;
 enum DashboardViews {
   DEFAULT = 'Default',
   BY_EMPLOYEE = 'By Employee',
+  BY_APPLICATION = 'By Application',
 }
 
 enum SoftwareFlag {
@@ -134,6 +135,42 @@ const ScanReports = () => {
 
   const handleTabChange = (key: string) => {
     setCurrentScanFilterTab(key as 'chronological' | 'date');
+  };
+
+  const getExpandableView = (v: DashboardViews) => {
+    switch (v) {
+      case DashboardViews.BY_EMPLOYEE:
+        return {
+          expandedRowRender: (record) => (
+            <>
+              <h3>Softwares</h3>
+              {record.softwares.map((item: any) => (
+                <Tag color={colorCodeMap[item.flag]} key={item.id}>
+                  {item.name}
+                </Tag>
+              ))}
+            </>
+          ),
+          rowExpandable: (record) => record.softwares?.length > 0,
+        };
+      case DashboardViews.BY_APPLICATION:
+        return {
+          expandedRowRender: (record) => (
+            <>
+              <h3>Minion IPs</h3>
+              {record.minions.map((item, index) => (
+                <Tag color="error" key={index}>
+                  {item.minion_ip}
+                </Tag>
+              ))}
+            </>
+          ),
+          rowExpandable: (record) => record.minions?.length > 0,
+        };
+      case DashboardViews.DEFAULT:
+      default:
+        return {};
+    }
   };
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
@@ -250,7 +287,7 @@ const ScanReports = () => {
       title: 'Software Name',
       dataIndex: 'software_name',
       key: 'name',
-      ...getColumnSearchProps('name'),
+      ...getColumnSearchProps('software_name'),
     },
     {
       title: 'Flag',
@@ -278,7 +315,7 @@ const ScanReports = () => {
       title: 'Employee Email',
       dataIndex: 'user_email',
       key: 'email',
-      ...getColumnSearchProps('employeeEmail'),
+      ...getColumnSearchProps('user_email'),
     },
     {
       title: 'IP Address',
@@ -350,6 +387,60 @@ const ScanReports = () => {
       ...getColumnSearchProps('minion_ip'),
     },
   ];
+
+  const byApplicationsColumn: ColumnsType<any> = [
+    {
+      title: 'Software Name',
+      dataIndex: 'software_name',
+      key: 'name',
+    },
+    {
+      title: 'IP Address',
+      dataIndex: 'minion_ip',
+      key: 'ip',
+      ...getColumnSearchProps('minion_ip'),
+    },
+    {
+      title: 'Flag',
+      dataIndex: 'flag',
+      key: 'flag',
+      filterSearch: true,
+      onFilter: (value, record) => record.flag === value,
+      filters: Object.keys(SoftwareFlag).map((i) => ({
+        text: <span>{i}</span>,
+        value: i,
+      })),
+    },
+    {
+      title: 'Operating System',
+      dataIndex: 'minion_os',
+      key: 'os',
+      filterSearch: true,
+      onFilter: (value, record) => record.os === value,
+      filters: ['Windows', 'Linux'].map((i) => ({
+        text: <span>{i}</span>,
+        value: i,
+      })),
+    },
+    {
+      title: 'Employee Email',
+      dataIndex: 'user_email',
+      key: 'email',
+      ...getColumnSearchProps('user_email'),
+    },
+  ];
+
+  const getColumns = (v: DashboardViews) => {
+    switch (v) {
+      case DashboardViews.BY_APPLICATION:
+        return byApplicationsColumn;
+      case DashboardViews.BY_EMPLOYEE:
+        return byEmployeesViewColumn;
+      case DashboardViews.DEFAULT:
+      default:
+        return columns;
+    }
+  };
 
   if (latestScanStatus === 'loading' || scanMetaStatus === 'loading')
     return <Spin size="large" />;
@@ -525,26 +616,8 @@ const ScanReports = () => {
                   ? scanData?.data.data.data
                   : scanData?.data.data.data
               }
-              columns={
-                view === DashboardViews.DEFAULT
-                  ? columns
-                  : byEmployeesViewColumn
-              }
-              expandable={
-                DashboardViews.BY_EMPLOYEE && {
-                  expandedRowRender: (record) => (
-                    <>
-                      <h3>Softwares</h3>
-                      {record.softwares.map((item: any) => (
-                        <Tag color={colorCodeMap[item.flag]} key={item.id}>
-                          {item.name}
-                        </Tag>
-                      ))}
-                    </>
-                  ),
-                  rowExpandable: (record) => record.softwares?.length > 0,
-                }
-              }
+              columns={getColumns(view)}
+              expandable={getExpandableView(view)}
               sticky
             />
           </div>

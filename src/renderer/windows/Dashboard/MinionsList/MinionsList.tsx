@@ -218,29 +218,35 @@ const MinionsList: React.FC = ({}) => {
                           width: '100px',
                         }}
                       >
-                        <CheckCircleFilled
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptKeyApi.mutate({
-                              keys: [item.key],
-                            });
-                          }}
-                          style={{
-                            color: green.primary,
-                          }}
-                        />
+                        {acceptKeyApi.status !== 'loading' ? (
+                          <>
+                            <CheckCircleFilled
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                acceptKeyApi.mutate({
+                                  keys: [item.key],
+                                });
+                              }}
+                              style={{
+                                color: green.primary,
+                              }}
+                            />
 
-                        <CloseCircleFilled
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            rejectKeyApi.mutate({
-                              keys: [item.key],
-                            });
-                          }}
-                          style={{
-                            color: red.primary,
-                          }}
-                        />
+                            <CloseCircleFilled
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                rejectKeyApi.mutate({
+                                  keys: [item.key],
+                                });
+                              }}
+                              style={{
+                                color: red.primary,
+                              }}
+                            />
+                          </>
+                        ) : (
+                          <Spin />
+                        )}
                       </div>,
                       // <Dropdown
                       //   overlay={<Menu items={dropdownOptions} />}

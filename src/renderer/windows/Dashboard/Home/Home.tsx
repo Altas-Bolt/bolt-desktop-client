@@ -117,7 +117,14 @@ const AlertCard = ({ flag, email, softwareName, id }) => {
       </div>
       <div className="action">
         <Popover placement="bottom" content={content} title="Actions">
-          <Button icon={<UserDeleteOutlined />}>Actions</Button>
+          <Button
+            icon={<UserDeleteOutlined />}
+            loading={resolveMutation.status === 'loading'}
+          >
+            {resolveMutation.status === 'loading'
+              ? 'Please Wait...'
+              : 'Actions'}
+          </Button>
         </Popover>
       </div>
     </div>

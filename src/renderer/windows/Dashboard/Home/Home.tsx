@@ -4,30 +4,73 @@ import {
   DeleteOutlined,
   LogoutOutlined,
   NotificationOutlined,
-  ProfileOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Avatar, Button, Popover } from 'antd';
+import { useEffect } from 'react';
+import { useAppContext } from 'renderer/context/appContext';
 import { useAuth } from 'renderer/context/authContext';
+import {
+  BlacklistedTypeSoftwareNotificationResolutionsEnum,
+  ISoftwareNotifications,
+} from 'types/types';
 import { api } from 'utils/api';
 import { getIpAddress } from 'utils/helperFunctions';
 import { HomeLayout } from './Home.styles';
 
-const AlertCard = ({ flag, email, softwareName }) => {
+const AlertCard = ({ flag, email, softwareName, id }) => {
+  const resolveMutation = useMutation(
+    ({
+      id,
+      resolvedBy,
+      terminalState,
+      resolution,
+    }: {
+      id: string;
+      resolvedBy: string;
+      terminalState: string;
+      resolution: string;
+    }) =>
+      api
+        .post('/bolt/notifications/softwares/resolve', {
+          id,
+          resolvedBy,
+          terminalState,
+          resolution,
+        })
+        .then((res) => res.data),
+    {
+      // enabled: false, //! FIX
+      onError: (err) => {
+        console.error('[get notifications]', err);
+      },
+    }
+  );
+  const { user } = useAppContext();
+
   const content = (
     <div>
-      <p>
+      {/* <p>
         <div
-          onClick={() => {}}
+        
           style={{ color: blue.primary!, cursor: 'pointer' }}
         >
           <DeleteOutlined /> Uninstall software
         </div>
-      </p>
+      </p> */}
        
       <p>
         <div
-          onClick={() => {}}
+          onClick={() => {
+            resolveMutation.mutate({
+              id,
+              resolution:
+                BlacklistedTypeSoftwareNotificationResolutionsEnum.NOTIFIED,
+              resolvedBy: user?.id as string,
+              terminalState: 'nkjdnc',
+            });
+          }}
           style={{ color: blue.primary!, cursor: 'pointer' }}
         >
           <NotificationOutlined /> Uninstall and notify
@@ -35,7 +78,15 @@ const AlertCard = ({ flag, email, softwareName }) => {
       </p>
       <p>
         <div
-          onClick={() => {}}
+          onClick={() => {
+            resolveMutation.mutate({
+              id,
+              resolution:
+                BlacklistedTypeSoftwareNotificationResolutionsEnum.LOGOFFED,
+              resolvedBy: user?.id as string,
+              terminalState: 'nkjdnc',
+            });
+          }}
           style={{ color: blue.primary!, cursor: 'pointer' }}
         >
           <LogoutOutlined /> Logout employee
@@ -84,7 +135,7 @@ const Home = () => {
         )
         .then((res) => res.data),
     {
-      enabled: false, //! FIX
+      // enabled: false, //! FIX
       refetchInterval: 1000,
       onError: (err) => {
         console.error('[get notifications]', err);
@@ -103,12 +154,18 @@ const Home = () => {
         <div className="recents-wrapper">
           <h2>Recent Alerts</h2>
           <div className="cards-grid">
-            <AlertCard
-              flag="blacklisted"
-              email={'aniket.biswas75@gmail.com'}
-              softwareName={'PUBG'}
-            />
-            <AlertCard
+            {data &&
+              data.data.map((item: any) => {
+                return (
+                  <AlertCard
+                    id={item.id}
+                    flag={item.software_flag}
+                    email={item.user_email}
+                    softwareName={item.software_name}
+                  />
+                );
+              })}
+            {/* <AlertCard
               flag="blacklisted"
               email={'rishabh@gmail.com'}
               softwareName={'DOS'}
@@ -142,7 +199,7 @@ const Home = () => {
               flag="blacklisted"
               email={'sjain@gmail.com'}
               softwareName={'Instagram'}
-            />
+            /> */}
           </div>
         </div>
         <div className="card-wrapper">

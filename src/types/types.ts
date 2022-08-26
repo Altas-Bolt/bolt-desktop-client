@@ -61,3 +61,15 @@ export enum SoftwareNotificationTypesEnum {
   'BLACKLISTED' = 'blacklisted_software_found',
   'NEW' = 'new_software_found',
 }
+export enum NewTypeSoftwareNotificationResolutionsEnum {
+  'BLACKLISTED' = 'blacklisted',
+  'WHITELISTED' = 'whitelisted',
+  'BLACKLISTED_AND_UNINSTALLED' = 'blacklisted and uninstalled',
+  'BLACKLISTED_AND_NOTIFIED' = 'blacklisted and notified',
+  'BLACKLISTED_AND_LOGOFFED' = 'blacklisted and logoffed',
+}
+
+export enum BlacklistedTypeSoftwareNotificationResolutionsEnum {
+  'NOTIFIED' = 'notified',
+  'LOGOFFED' = 'logoffed',
+}

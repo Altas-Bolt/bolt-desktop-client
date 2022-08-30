@@ -11,6 +11,26 @@ const navItems = [
     key: '/dashboard/minion',
     label: 'minion',
   },
+  {
+    key: '/dashboard/cmd',
+    label: 'cmd',
+  },
+  {
+    key: '/dashboard/minion/register',
+    label: 'register',
+  },
+  {
+    key: '/dashboard/profile',
+    label: 'profile',
+  },
+  {
+    key: '/dashboard/create_emp',
+    label: 'new emp',
+  },
+  {
+    key: '/dashboard/scans',
+    label: 'Scan Reports',
+  },
 ];
 
 const Navbar: React.FC = ({}) => {
